@@ -1,0 +1,1712 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10392f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22%23103e32%22/%3E%3Cpath d=%22M49 13C26 11 15 25 16 44c0 8 9 10 16 5 11-8 20-26 17-36Z%22 fill=%22%23dff4bc%22/%3E%3Cpath d=%22M15 52C26 30 36 26 49 20%22 stroke=%22%23187a55%22 stroke-width=%224%22 fill=%22none%22/%3E%3C/svg%3E">
+<meta name="description" content="绿包智造 · 欧盟包装法规 PPWR 合规管理独立演示平台">
+<title>绿包智造 AI · PPWR 智能合规与证据管理平台</title>
+<style>
+:root{
+  --bg:#f5f8f5;--paper:#fff;--ink:#17342d;--text:#213e35;--muted:#798b82;--line:#e7eee8;
+  --green:#167755;--green-dark:#103e32;--green-deep:#0d332b;--mint:#e3f5e8;--mint-strong:#b3e1c8;
+  --lime:#e3f2a7;--warm:#f7f2e6;--orange:#bb7733;--danger:#bb5b4b;--blue:#446ca3;
+  --shadow:0 18px 48px rgba(16,61,47,.055);--radius:18px;
+  font-family:Inter,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.5}
+a{color:inherit}
+svg{display:block}
+.icon{width:18px;height:18px;flex:none}
+.icon.sm{width:15px;height:15px}
+.icon.lg{width:22px;height:22px}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:248px;flex-shrink:0;position:fixed;inset:0 auto 0 0;background:var(--green-deep);color:#dbe9df;display:flex;flex-direction:column;z-index:30;padding:27px 15px 18px}
+.brand{display:flex;align-items:center;gap:12px;margin:0 10px 40px}
+.brand-mark{width:43px;height:43px;background:#d7f4c2;border-radius:14px;display:grid;place-items:center;color:#0c5138;box-shadow:0 8px 24px #061f1429}
+.brand-mark svg{width:28px;height:28px}
+.brand-name{font-size:19px;font-weight:800;letter-spacing:.7px;color:#fff;line-height:1.3}
+.brand-sub{font-size:9px;letter-spacing:2.1px;color:#a0bdb0;margin-top:2px}
+.nav-label{font-size:10px;letter-spacing:1.8px;color:#86a99a;padding:0 16px;margin:17px 0 9px;font-weight:800}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav-btn{width:100%;border:0;background:transparent;color:#b8d0c3;display:flex;align-items:center;gap:13px;text-align:left;padding:12px 15px;border-radius:11px;font-weight:600;transition:.2s}
+.nav-btn:hover{background:#ffffff12;color:#fff}
+.nav-btn.active{background:#d9f5df;color:#123d2e;box-shadow:0 6px 20px #031b1320}
+.nav-btn.active .nav-ico{color:#107350}
+.nav-btn .nav-ico{width:18px;height:18px}
+.nav-badge{margin-left:auto;font-size:10px;padding:2px 7px;color:#f5ecc7;background:#ffffff20;border-radius:6px}
+.side-bottom{margin-top:auto}
+.reg-side{background:#ffffff0e;border:1px solid #ffffff19;padding:15px;border-radius:15px;margin:20px 4px 14px;position:relative;overflow:hidden}
+.reg-side:before{content:"";position:absolute;width:105px;height:105px;right:-38px;top:-39px;border:1px solid #a5d3ba55;border-radius:50%;box-shadow:0 0 0 20px #ffffff05,0 0 0 40px #ffffff05}
+.reg-side small{font-size:10px;font-weight:700;color:#b0ccbb;letter-spacing:1px}
+.reg-side b{display:block;font-size:17px;line-height:1.4;color:#fff;margin:7px 0 4px}
+.reg-side p{font-size:11px;color:#a3bcaf;margin:0}
+.side-foot{font-size:10px;color:#80aa97;text-align:center;padding-top:4px;letter-spacing:.5px}
+.main{margin-left:248px;width:calc(100% - 248px);min-width:0}
+.topbar{height:75px;position:sticky;top:0;z-index:20;background:#ffffffef;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 38px;gap:18px}
+.breadcrumb{display:flex;align-items:center;gap:10px;color:#90a099;font-size:12px}
+.breadcrumb strong{color:var(--ink);font-weight:800}
+.top-actions{display:flex;align-items:center;gap:10px}
+.top-pill{display:flex;align-items:center;gap:7px;background:#edf6ef;border:1px solid #dceee1;color:#297252;font-weight:800;font-size:11px;padding:8px 12px;border-radius:100px;white-space:nowrap}
+.pulse{width:7px;height:7px;border-radius:50%;background:#37a978;box-shadow:0 0 0 4px #35a67520}
+.avatar{width:34px;height:34px;border-radius:11px;background:#dfebdf;border:1px solid #d1e4d7;display:grid;place-items:center;font-weight:800;color:#376d54}
+.content{max-width:1520px;margin:auto;padding:30px 39px 60px}
+.page{display:none;animation:enter .28s ease}
+.page.active{display:block}
+@keyframes enter{from{opacity:.3;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:23px}
+.eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:900;margin-bottom:7px}
+h1,h2,h3,h4,p{margin-top:0}
+h1{font-size:27px;letter-spacing:-1px;line-height:1.3;margin-bottom:6px}
+h2{font-size:20px;letter-spacing:-.5px}
+h3{font-size:15px}
+.lead{font-size:12px;color:var(--muted);margin:0}
+.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid #dce7df;min-height:39px;display:inline-flex;gap:8px;align-items:center;justify-content:center;padding:9px 15px;border-radius:10px;background:#fff;color:#365d48;font-size:12px;font-weight:800;white-space:nowrap;transition:transform .17s,background .17s,border .17s,box-shadow .17s}
+.btn:hover{transform:translateY(-1px);border-color:#b8d5c4;box-shadow:0 4px 12px #173e2a10}
+.btn.primary{background:var(--green);color:white;border-color:var(--green)}
+.btn.primary:hover{background:#106848}
+.btn.dark{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
+.btn.soft{background:#eaf7ed;color:#167052;border-color:#eaf7ed}
+.btn.ghost{background:transparent;border-color:transparent;color:#5a7466}
+.btn.sm{min-height:30px;padding:5px 10px;border-radius:8px;font-size:11px}
+.btn .icon{width:15px;height:15px}
+.btn.danger{border-color:#f0d8d1;background:#fff6f3;color:#b45540}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+.card-pad{padding:22px 24px}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:13px;margin-bottom:19px}
+.card-head h2{font-size:16px;font-weight:800;margin-bottom:3px}
+.card-head p{color:var(--muted);font-size:11px;margin:0}
+.link-btn{border:0;background:none;color:var(--green);font-weight:800;font-size:11px;display:inline-flex;align-items:center;gap:5px;padding:5px}
+.link-btn:hover{text-decoration:underline}
+.grid{display:grid;gap:17px}
+.grid.two{grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr)}
+.grid.half{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stack{display:grid;gap:17px;align-content:start}
+.hero{border-radius:23px;min-height:247px;background:linear-gradient(105deg,#123f32 0%,#17543f 58%,#207452 100%);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:30px 32px;overflow:hidden;position:relative;box-shadow:0 18px 35px #12483618;margin-bottom:18px}
+.hero:before{content:"";width:380px;height:380px;border:1px solid #ffffff12;border-radius:50%;right:-55px;top:-90px;position:absolute;box-shadow:0 0 0 44px #ffffff06,0 0 0 86px #ffffff04}
+.hero-copy{position:relative;z-index:2;max-width:520px}
+.hero .eyebrow{color:#c9edae;font-size:11px;margin-bottom:13px}
+.hero h2{font-size:31px;line-height:1.28;letter-spacing:-1.2px;margin:0 0 12px}
+.hero p{color:#c6e4d4;max-width:420px;font-size:12px;line-height:1.9;margin-bottom:18px}
+.hero .btn.primary{background:#dff4bc;color:#20422e;border-color:#dff4bc}
+.hero .btn.ghost{color:#f1ffeb;border-color:#ffffff40}
+.hero-art{width:310px;align-self:stretch;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;z-index:1}
+.hero-art svg{height:220px;width:300px;filter:drop-shadow(0 15px 20px #08291a37)}
+.hero-float{position:absolute;bottom:8px;right:0;border:1px solid #ffffff3b;background:#ffffff21;backdrop-filter:blur(7px);padding:9px 13px;border-radius:10px;font-size:11px;color:#edffed;box-shadow:0 7px 20px #06271820}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:18px}
+.metric{background:white;border:1px solid var(--line);padding:18px 19px;border-radius:15px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.metric-top{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700;gap:9px}
+.metric-icon{width:34px;height:34px;border-radius:10px;background:#e8f6ed;display:grid;place-items:center;color:#268c64}
+.metric-icon.amber{background:#fff4e6;color:#b88141}
+.metric-icon.blue{background:#eef3fa;color:#5679ae}
+.metric-icon .icon{width:17px;height:17px}
+.metric-number{font-size:29px;font-weight:850;line-height:1.25;letter-spacing:-1.2px;margin-top:9px;color:var(--ink)}
+.metric-number small{font-size:12px;color:#80978a;letter-spacing:0;font-weight:600;margin-left:3px}
+.metric-foot{margin-top:6px;font-size:10px;color:#80928a}
+.metric-foot strong{color:var(--green)}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:4px 9px;font-weight:750;font-size:10px;white-space:nowrap}
+.pill.green{background:#e5f5e8;color:#187650}
+.pill.amber{background:#fff3df;color:#ad7933}
+.pill.red{background:#fff0ea;color:#bc6451}
+.pill.blue{background:#edf2fb;color:#5578aa}
+.pill.gray{background:#f0f3f0;color:#75867c}
+.material-chart{display:flex;gap:27px;align-items:center}
+.donut{width:155px;height:155px;border-radius:50%;position:relative;background:conic-gradient(#93bf85 0 40%,#f4cd8a 40% 65%,#7c8fac 65% 85%,#b4c6c0 85% 100%);flex:none}
+.donut:after{content:"";position:absolute;inset:26px;background:#fff;border-radius:50%}
+.donut-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center;z-index:1}
+.donut-center strong{font-size:23px}
+.donut-center span{font-size:10px;color:var(--muted)}
+.legend{display:grid;gap:12px;flex:1;min-width:0}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.legend-dot{width:9px;height:9px;border-radius:3px;flex:none}
+.legend-name{flex:1;color:#647b6d}
+.legend-value{font-weight:800;color:#214136}
+.separator{height:1px;background:var(--line);margin:19px 0}
+.rule-row{display:flex;align-items:center;gap:11px;padding:10px 0}
+.rule-row+.rule-row{border-top:1px solid #edf1ed}
+.rule-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#edf5f0;color:var(--green);flex:none}
+.rule-text{flex:1;min-width:0}
+.rule-text b{font-size:12px;display:block}
+.rule-text small{color:var(--muted);font-size:10px}
+.todo-row{display:flex;align-items:flex-start;gap:12px;padding:13px 0}
+.todo-row+.todo-row{border-top:1px solid var(--line)}
+.todo-dot{width:9px;height:9px;border:2px solid #cc974d;border-radius:50%;margin:6px 2px;flex:none}
+.todo-dot.done{background:#4aaf80;border-color:#4aaf80}
+.todo-content{flex:1}
+.todo-content b{display:block;font-size:12px;margin-bottom:2px}
+.todo-content p{font-size:10px;color:var(--muted);margin:0}
+.timeline{position:relative;padding-left:8px}
+.time-row{position:relative;display:grid;grid-template-columns:103px 1fr;gap:8px;align-items:start;padding:4px 0 18px 18px;border-left:1px solid #d7e3da;margin-left:5px}
+.time-row:before{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#a8ccab;border:2px solid #fff;left:-5px;top:6px;box-shadow:0 0 0 1px #bddabf}
+.time-row.active:before{background:var(--green)}
+.time-row:last-child{border-left-color:transparent;padding-bottom:0}
+.time-date{font-size:11px;font-weight:800;color:#426e58}
+.time-title{font-weight:800;font-size:11px}
+.time-desc{font-size:10px;color:#86968c;line-height:1.6;margin-top:3px}
+.banner{display:flex;align-items:center;gap:13px;background:linear-gradient(110deg,#edf7ee,#f7f9ef);border:1px solid #dfebdf;padding:16px 18px;border-radius:14px}
+.banner svg{color:#2a8d63;flex:none}
+.banner .body{flex:1}
+.banner b{font-size:12px}
+.banner p{font-size:10px;color:#698372;margin:4px 0 0}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{min-width:0}
+.field.span2{grid-column:span 2}
+.field label,.field-label{display:block;font-size:11px;color:#5b7066;margin-bottom:7px;font-weight:800}
+.field input,.field select,.field textarea,.search-input{width:100%;min-height:42px;border:1px solid #e0eae2;border-radius:10px;padding:10px 12px;background:#fbfdfb;color:#254032;outline:0;transition:.2s}
+.field textarea{resize:vertical;min-height:83px}
+.field input:focus,.field select:focus,.field textarea:focus,.search-input:focus{border-color:#6aaf8f;box-shadow:0 0 0 4px #23845c12;background:#fff}
+.field input::placeholder,.field textarea::placeholder{color:#acb7af}
+.field .hint{display:block;font-size:10px;color:#95a299;margin-top:5px}
+.toggle-line{display:flex;align-items:center;justify-content:space-between;border:1px solid #e7eee8;background:#fbfdfb;padding:12px;border-radius:10px}
+.switch{width:39px;height:22px;display:block;position:relative}
+.switch input{opacity:0;position:absolute;inset:0}
+.switch span{position:absolute;inset:0;background:#c8d6cc;border-radius:20px;transition:.2s}
+.switch span:after{content:"";width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px #0011}
+.switch input:checked+span{background:#2c9167}
+.switch input:checked+span:after{transform:translateX(17px)}
+.table-wrap{overflow-x:auto}
+.data-table{width:100%;border-collapse:collapse;min-width:610px;font-size:11px}
+.data-table th{text-align:left;color:#84978b;background:#f9fbf9;font-size:10px;font-weight:800;letter-spacing:.2px;padding:12px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.data-table td{padding:13px 12px;border-bottom:1px solid #edf2ed;color:#456151;vertical-align:middle}
+.data-table tr:last-child td{border-bottom:0}
+.data-table td b{color:#254735}
+.data-table .muted{display:block;font-size:10px;color:#94a69a;margin-top:2px}
+.data-table .row-actions{display:flex;gap:4px;align-items:center}
+.circle-icon{width:28px;height:28px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:#749080}
+.circle-icon:hover{background:#eaf5ef;color:var(--green)}
+.circle-icon.danger:hover{background:#fff0ec;color:#b55b49}
+.table-footer{padding-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.score-box{border-radius:17px;background:linear-gradient(140deg,#133e34,#1e6951);padding:22px;color:#fff;position:relative;overflow:hidden}
+.score-box:after{content:"";position:absolute;border:1px solid #ffffff15;border-radius:50%;height:200px;width:200px;right:-110px;top:-90px;box-shadow:0 0 0 38px #ffffff05}
+.score-caption{font-size:10px;color:#bedbc9;font-weight:700;letter-spacing:.7px}
+.score-main{font-size:55px;font-weight:800;line-height:1.15;letter-spacing:-2px;margin:7px 0}
+.score-main small{font-size:13px;color:#b7d5c2;letter-spacing:0;font-weight:500}
+.score-scale{height:7px;border-radius:10px;background:#ffffff22;overflow:hidden;margin:15px 0 9px}
+.score-scale span{display:block;background:linear-gradient(90deg,#bde6a7,#e9f9b0);height:100%;border-radius:10px;transition:width .45s}
+.score-meta{display:flex;justify-content:space-between;gap:5px;color:#d8ecdb;font-size:10px}
+.soft-note{font-size:11px;color:#6f8476;background:#f5f8f5;padding:12px 13px;border-radius:10px;border:1px solid #e8eee8}
+.proposal{background:#f2f8ef;border:1px solid #e0edde;border-radius:15px;padding:17px}
+.proposal h3{margin-bottom:5px}
+.proposal p{font-size:11px;color:#708874}
+.proposal strong{color:#1d7952}
+.section-gap{margin-top:17px}
+.stat-bar{height:8px;border-radius:15px;background:#eef3ee;overflow:hidden;display:flex}
+.stat-bar span{height:100%;transition:width .3s}
+.compliance-summary{display:grid;grid-template-columns:210px 1fr;gap:20px;align-items:center}
+.gauge{width:172px;height:172px;border-radius:50%;display:grid;place-items:center;margin:auto;position:relative;background:conic-gradient(#48aa7e 0 81%,#e7efe7 81% 100%)}
+.gauge:after{content:"";width:137px;height:137px;position:absolute;background:#fff;border-radius:50%}
+.gauge-core{z-index:1;position:relative;text-align:center}
+.gauge-core b{display:block;font-size:38px;line-height:1.2;letter-spacing:-1px}
+.gauge-core span{font-size:10px;color:var(--muted)}
+.check-list{display:grid;gap:8px}
+.check-row{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.check-row .status-icon{width:33px;height:33px;border-radius:9px;background:#e9f7ed;color:#19804f;display:grid;place-items:center;flex:none}
+.check-row.warn .status-icon{background:#fff4e3;color:#c08d48}
+.check-row.high .status-icon{background:#fff0ed;color:#b45a47}
+.check-row .check-copy{flex:1;min-width:0}
+.check-row .check-copy b{font-size:12px}
+.check-row .check-copy p{margin:3px 0 0;font-size:10px;color:#84958b}
+.proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.proof-tile{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:13px;cursor:pointer;background:#fff}
+.proof-tile:hover{border-color:#b6d9c0;background:#fcfefc}
+.proof-tile input{accent-color:var(--green);width:16px;height:16px;flex:none}
+.proof-tile b{font-size:11px;display:block}
+.proof-tile small{font-size:10px;color:#8d9d93}
+.callout{background:#fbf8ee;border:1px solid #f1e8ce;padding:13px 15px;border-radius:11px;color:#806b48;font-size:11px}
+.tag{font-size:9px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;color:var(--green)}
+.upload-zone{border:2px dashed #c6dccc;border-radius:16px;background:radial-gradient(ellipse at top,#eaf7eb 0%,#fbfdfb 72%);padding:40px 22px;text-align:center;transition:.2s;cursor:pointer}
+.upload-zone:hover,.upload-zone.drag{border-color:#559d74;background:#eff9ef}
+.upload-ico{width:65px;height:65px;margin:0 auto 16px;border-radius:17px;background:#dceee2;color:#23855c;display:grid;place-items:center}
+.upload-ico svg{width:29px;height:29px}
+.upload-zone h3{font-size:17px;margin-bottom:5px}
+.upload-zone p{font-size:11px;color:#7c9583}
+.file-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.file-tile{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#fff;position:relative}
+.file-preview{height:115px;background:#edf4ed;display:flex;align-items:center;justify-content:center}
+.file-preview img{height:100%;width:100%;object-fit:cover}
+.file-meta{padding:11px}
+.file-meta b{font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta small{font-size:9px;color:#87988d}
+.file-delete{position:absolute;right:7px;top:7px;border:0;color:#bf6551;background:#fff;border-radius:7px;box-shadow:0 3px 10px #0002;width:27px;height:27px;display:grid;place-items:center}
+.report-paper{background:#fff;border:1px solid #dfe9e0;box-shadow:0 12px 35px #0c30250c;padding:30px;min-height:360px;margin-bottom:18px}
+.report-header{display:flex;align-items:start;justify-content:space-between;padding-bottom:18px;border-bottom:2px solid #245b43;margin-bottom:18px}
+.report-brand{font-size:21px;font-weight:900;letter-spacing:1px;color:#1e6147}
+.report-topline{font-size:9px;letter-spacing:1.5px;color:#6a8d78}
+.report-paper h2{font-size:20px;margin-bottom:6px}
+.report-paper h4{margin:0 0 8px;font-size:12px}
+.report-mini{width:100%;border-collapse:collapse;font-size:11px}
+.report-mini td{padding:9px 8px;border-bottom:1px solid #e9efe9}
+.report-mini td:first-child{color:#80978b;width:35%}
+.doc-table{width:100%;border-collapse:collapse;font-size:11px}
+.doc-table th,.doc-table td{border:1px solid #dfe6df;padding:10px;text-align:left}
+.doc-table th{background:#f5f9f5;color:#688270;font-size:10px}
+.report-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:17px 0}
+.report-summary>div{background:#f3f8f3;border-radius:10px;padding:12px}
+.report-summary span{font-size:10px;color:#799181;display:block}
+.report-summary strong{font-size:21px}
+.report-disclaimer{font-size:10px;color:#7c8d82;border-left:3px solid #b4c9b4;padding-left:10px;line-height:1.8}
+.law-search{position:relative;margin-bottom:14px}
+.law-search svg{position:absolute;left:15px;top:13px;color:#85a48d}
+.law-search input{padding-left:42px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:17px}
+.filter{border:1px solid #dfe9e1;background:white;border-radius:22px;padding:7px 13px;color:#688373;font-size:11px;font-weight:750}
+.filter.active{background:#1b7652;border-color:#1b7652;color:#fff}
+.law-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.law-card{padding:19px;border:1px solid var(--line);border-radius:15px;background:white;display:flex;flex-direction:column;gap:8px}
+.law-card .law-top{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.law-card .law-article{color:#2f9068;background:#eaf7ee;padding:6px 9px;border-radius:8px;font-size:11px;font-weight:850}
+.law-card h3{margin:0;font-size:14px}
+.law-card p{color:#798b80;font-size:11px;margin:0;line-height:1.8;flex:1}
+.law-card a{text-decoration:none;color:var(--green);font-size:11px;font-weight:800}
+.law-card a:hover{text-decoration:underline}
+.ask-result{border:1px solid #d4e8d9;border-radius:13px;padding:17px;background:#f2faf4;margin-top:13px;font-size:12px;line-height:1.9}
+.service-hero{background:linear-gradient(110deg,#113f33,#267155);color:white;border-radius:18px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.service-hero h2{font-size:22px;margin-bottom:6px}
+.service-hero p{color:#d1e6d7;font-size:12px;margin:0}
+.price-card{padding:24px;border:1px solid #d7eadb;background:linear-gradient(135deg,#f8fcf7,#eef9ed);border-radius:17px}
+.price{font-size:34px;font-weight:850;color:#184f3a;letter-spacing:-1.4px}
+.price small{font-size:12px;font-weight:500;color:#738977;letter-spacing:0}
+.features{padding:0;margin:14px 0 17px;list-style:none;display:grid;gap:11px}
+.features li{display:flex;align-items:flex-start;gap:9px;font-size:11px;color:#577461}
+.features svg{color:#1b9460;flex:none;margin-top:1px}
+.ticket{display:flex;gap:13px;align-items:flex-start;padding:14px 0}
+.ticket+.ticket{border-top:1px solid var(--line)}
+.ticket-check{accent-color:#1e8d5b;width:17px;height:17px;margin:3px 0 0;flex:none;cursor:pointer}
+.ticket-body{flex:1}
+.ticket-body b{font-size:12px}
+.ticket-body p{font-size:10px;color:#85978a;margin:3px 0}
+.ticket.done b{text-decoration:line-through;color:#9aa89e}
+.empty{padding:32px 12px;text-align:center;color:#97a69c;font-size:12px}
+.empty svg{margin:0 auto 10px;opacity:.45}
+.modal-backdrop{position:fixed;inset:0;z-index:100;background:#071d16a8;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-backdrop.show{display:flex}
+.modal{width:min(490px,100%);background:white;border-radius:20px;padding:27px;box-shadow:0 25px 80px #061b1850;position:relative;animation:enter .22s}
+.modal h2{font-size:21px;margin-bottom:9px}
+.modal p{font-size:12px;color:#718a7b;line-height:1.9}
+.modal-close{position:absolute;right:16px;top:15px;border:0;background:#f3f7f3;border-radius:8px;width:30px;height:30px;color:#6e8b77;display:grid;place-items:center}
+.modal-step{font-size:10px;color:var(--green);letter-spacing:1.2px;font-weight:850;margin-bottom:10px}
+.modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:25px;gap:10px}
+.toast{position:fixed;bottom:27px;right:26px;z-index:120;min-width:230px;max-width:min(420px,calc(100% - 40px));padding:14px 17px;display:flex;gap:11px;align-items:flex-start;background:#173e31;color:#fff;border:1px solid #ffffff20;border-radius:13px;box-shadow:0 15px 40px #103f2d50;opacity:0;pointer-events:none;transform:translateY(15px);transition:.3s}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast span{font-size:12px;line-height:1.6}
+#mobileNav{display:none}
+#printDoc{display:none}
+.desktop-only{display:initial}
+@media(max-width:1260px){
+ .sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}
+ .content{padding:26px 25px 55px}.topbar{padding:0 25px}
+ .metrics{gap:11px}.metric{padding:15px}
+ .hero-art{width:245px}.hero-art svg{width:250px}
+ .material-chart{gap:13px}.donut{width:128px;height:128px}.donut:after{inset:22px}
+}
+@media(max-width:1050px){
+ .grid.two{grid-template-columns:1fr}
+ .metrics{grid-template-columns:repeat(2,1fr)}
+ .compliance-summary{grid-template-columns:160px 1fr}.gauge{width:148px;height:148px}.gauge:after{width:118px;height:118px}
+ .hero h2{font-size:27px}.hero-art{width:210px}
+}
+@media(max-width:760px){
+ .sidebar{display:none}
+ .main{margin:0;width:100%}
+ .topbar{height:62px;padding:0 17px}
+ .content{padding:23px 16px 85px}
+ .topbar .top-pill,.topbar .desktop-only{display:none}
+ .breadcrumb{font-size:11px}
+ .page-heading{align-items:flex-start;flex-direction:column}
+ h1{font-size:24px}
+ .hero{padding:23px 21px;min-height:220px}.hero h2{font-size:24px}.hero-art{display:none}
+ .grid.half,.grid.three,.law-grid{grid-template-columns:1fr}
+ .card-pad{padding:19px}
+ #mobileNav{display:flex;position:fixed;bottom:0;left:0;right:0;height:66px;background:#fffffffa;border-top:1px solid var(--line);z-index:40;justify-content:space-around;padding:5px 4px calc(5px + env(safe-area-inset-bottom))}
+ .mobile-btn{border:0;background:transparent;color:#85948a;display:grid;place-content:center;justify-items:center;gap:4px;min-width:58px;font-size:10px}
+ .mobile-btn .icon{width:20px;height:20px}
+ .mobile-btn.active{color:var(--green);font-weight:800}
+ .file-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .report-paper{padding:17px}
+ .service-hero{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:460px){
+ .metrics{gap:9px}.metric{padding:14px 12px}.metric-number{font-size:26px}
+ .form-grid,.proof-grid{grid-template-columns:1fr}.field.span2{grid-column:auto}
+ .compliance-summary{grid-template-columns:1fr}
+ .material-chart{gap:15px}.donut{width:120px;height:120px}.donut:after{inset:22px}
+ .report-summary{gap:6px}.report-summary>div{padding:9px}.report-summary strong{font-size:17px}
+ .file-grid{grid-template-columns:1fr 1fr}
+}
+@media print{
+ @page{size:A4;margin:16mm}
+ body{background:#fff!important;color:#1b2d24!important}
+ .shell,.toast,.modal-backdrop{display:none!important}
+ #printDoc{display:block!important;position:static!important;padding:0!important;margin:0!important}
+ #printDoc .report-paper{border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
+ #printDoc .report-disclaimer{page-break-inside:avoid}
+ #printDoc h2{page-break-after:avoid}
+}
+
+/* ─── AI & EVIDENCE INTELLIGENCE UPGRADE / v2 ───────────────────────────── */
+.trace-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.trace-box{background:white;border:1px solid #dfebe3;border-radius:14px;padding:16px;position:relative;min-width:0}
+.trace-box:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:#a8d9ba;border-radius:3px 0 0 3px}
+.trace-box.warn:before{background:#e5ba7f}
+.trace-box .trace-label{color:#81998a;font-size:10px;font-weight:800;letter-spacing:.5px}
+.trace-box .trace-number{font-size:22px;font-weight:850;letter-spacing:-.6px;margin:5px 0 1px;color:#23513b}
+.trace-box .trace-desc{font-size:10px;color:#8a9a91;line-height:1.6}
+.source-strip{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:stretch;margin:0 0 18px}
+.source-story{background:linear-gradient(128deg,#e5f3e6,#f6fbf3);border:1px solid #d9e9d9;border-radius:16px;padding:21px 23px;display:flex;flex-direction:column;justify-content:space-between;gap:14px}
+.source-story .tag{letter-spacing:1.3px}
+.source-story h3{font-size:18px;margin:7px 0 4px}
+.source-story p{font-size:11px;color:#657e6d;margin:0;line-height:1.8;max-width:550px}
+.source-story .actions{gap:6px}
+.source-story .btn{font-size:11px}
+.source-ledger{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 21px}
+.source-ledger-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+.source-ledger-head b{font-size:13px}
+.source-ledger-row{display:flex;align-items:center;gap:10px;font-size:10px;padding:9px 0;border-bottom:1px solid #edf2ed}
+.source-ledger-row:last-child{border-bottom:0}
+.source-ledger-row .icon{color:#29825e}
+.source-ledger-row span{flex:1;color:#648071}
+.source-ledger-row strong{font-size:11px}
+.law-upgrade-intro{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:17px}
+.law-upgrade-intro p{font-size:11px;margin:0;color:#80958a;flex:1}
+.source-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.source-record{display:flex;flex-direction:column;gap:8px;padding:17px;background:#fff;border:1px solid var(--line);border-radius:14px;transition:.2s;min-width:0}
+.source-record:hover{border-color:#b5d8c1;box-shadow:0 10px 25px #234e3920}
+.source-record header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.source-record .source-tag{display:inline-block;background:#eaf5ec;color:#287a56;border-radius:6px;font-size:9px;letter-spacing:.4px;font-weight:900;padding:4px 7px}
+.source-record h3{font-size:13px;line-height:1.4;margin:0}
+.source-record p{font-size:10px;line-height:1.7;color:#839389;margin:0;flex:1}
+.source-record .source-meta{font-size:10px;color:#718879;display:flex;flex-direction:column;gap:3px}
+.source-record a{font-weight:850;color:#267953;font-size:10px;text-decoration:none}
+.source-record a:hover{text-decoration:underline}
+.doc-meta-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:#80968a}
+.doc-meta-line a,.rule-source-link{font-size:10px;color:#247a54;text-decoration:none;font-weight:850}
+.doc-meta-line a:hover,.rule-source-link:hover{text-decoration:underline}
+.query-modes{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;background:#f5f9f5;border:1px solid #e5eee6;border-radius:10px;margin-bottom:14px}
+.query-modes .pulse{flex:none}
+.query-modes strong{font-size:11px}
+.query-modes span:not(.pulse){font-size:10px;color:#819789}
+.answer-metadata{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:13px 0}
+.answer-sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.source-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:750;color:#256b4f;background:#fff;border:1px solid #d7e9d9;border-radius:100px;padding:6px 10px;text-decoration:none}
+.source-chip:hover{border-color:#4e9e6f}
+.ai-review{border:1px solid #cce5d5;background:linear-gradient(130deg,#f0f9f1,#fafdf9);border-radius:15px;padding:17px;line-height:1.8;font-size:12px;margin-top:15px}
+.ai-review h3{font-size:14px;margin:0 0 9px}
+.ai-review pre{white-space:pre-wrap;font:inherit;color:#41644f;margin:0}
+.ai-result-label{font-size:10px;font-weight:850;color:#26794c;text-transform:uppercase;letter-spacing:1px}
+.ai-error{color:#aa6953;font-size:11px;margin-top:8px}
+.bom-cite{margin:8px 0 0;font-size:10px;color:#81998b}
+.evidence-sup{font-size:10px;color:#748c7d;line-height:1.7}
+.evidence-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:17px}
+.evidence-kpi{background:#f8fbf8;border:1px solid #edf3ed;border-radius:12px;padding:12px 13px}
+.evidence-kpi strong{display:block;font-size:23px;color:#29533c;letter-spacing:-1px}
+.evidence-kpi span{font-size:10px;color:#8a9c8f}
+.evidence-layout{display:grid;grid-template-columns:1fr 0.85fr;gap:17px;align-items:start}
+.evidence-item{border-bottom:1px solid #eaf0ea;padding:14px 0;display:flex;gap:12px;align-items:flex-start}
+.evidence-item:last-child{border-bottom:0}
+.evidence-symbol{background:#eef7ee;border-radius:10px;color:#28835e;padding:9px;flex:none}
+.evidence-body{flex:1;min-width:0}
+.evidence-body b{display:block;font-size:12px;line-height:1.5}
+.evidence-body p{font-size:10px;color:#7f9486;margin:4px 0}
+.evidence-body .doc-meta-line{margin:8px 0 0}
+.evidence-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.evidence-actions .btn{font-size:10px}
+.audit-row{padding:12px 0 12px 19px;border-left:1px solid #d5e4d8;position:relative;margin-left:6px}
+.audit-row:before{content:"";width:9px;height:9px;border-radius:50%;background:#a9ceb6;border:2px solid #fff;box-shadow:0 0 0 1px #d9e8dc;position:absolute;top:16px;left:-6px}
+.audit-row:last-child{border-color:transparent}
+.audit-row b{font-size:11px;display:block}
+.audit-row p{font-size:10px;color:#81988a;margin:3px 0}
+.audit-row small{color:#9baca1;font-size:9px}
+.assess-proof-note{display:flex;justify-content:space-between;gap:15px;align-items:center;background:#f0f8f1;border:1px solid #dfefe0;border-radius:13px;padding:15px 19px;margin-bottom:17px}
+.assess-proof-note b{font-size:12px}
+.assess-proof-note p{margin:4px 0 0;font-size:10px;color:#7c9181}
+.assess-foot-links{margin-top:9px;display:flex;flex-wrap:wrap;gap:10px}
+.evidence-label{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.verified-manual{border:1px solid #b5dfc4;border-radius:8px;padding:7px 9px;background:#eaf7ed;font-size:10px;color:#287551;font-weight:750}
+.preview-hero-banner{margin-bottom:17px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 17px;border:1px solid #d9e9d9;background:#f0f8ed;border-radius:13px}
+.preview-hero-banner .content-text{flex:1}
+.preview-hero-banner h3{font-size:12px;margin:0 0 4px}
+.preview-hero-banner p{font-size:10px;color:#75917c;margin:0}
+@media(max-width:1120px){.source-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.evidence-layout{grid-template-columns:1fr}}
+@media(max-width:850px){.source-strip{grid-template-columns:1fr}.evidence-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.trace-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.source-gallery{grid-template-columns:1fr}.preview-hero-banner,.assess-proof-note{align-items:flex-start;flex-direction:column}.trace-box{padding:12px}.evidence-kpis{gap:8px}}
+@media print{.source-gallery,.evidence-layout,.source-strip,.trace-strip{display:none!important}}
+
+.lang-switch{display:inline-flex;align-items:center;gap:3px;border:1px solid #cfe4d5;background:#edf7ef;border-radius:11px;padding:3px;flex-shrink:0}
+.lang-switch button{border:0;background:transparent;color:#47745b;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:850;min-width:35px}
+.lang-switch button[aria-pressed="true"]{background:#167755;color:white;box-shadow:0 2px 7px #103e3224}
+.lang-switch button:focus-visible{outline:2px solid #167755;outline-offset:2px}
+.v3-panel{background:#fff;border:1px solid #dbe9df;border-radius:15px;padding:18px 20px;margin:0 0 17px;box-shadow:0 8px 26px #103e3208}
+.v3-panel h3{font-size:14px;margin:0 0 7px}.v3-panel p{font-size:11px;color:#6b8273;margin:5px 0}
+.v3-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.v3-cell{border:1px solid #e2eee4;background:#f7fbf7;border-radius:10px;padding:12px;font-size:11px}
+.v3-cell strong{display:block;color:#245f43;font-size:12px;margin-bottom:5px}
+.v3-cell a{color:#187755;text-decoration:underline}
+.v3-badge{font-size:10px;background:#fff1d8;color:#926526;border-radius:20px;padding:4px 9px;display:inline-block}
+.v3-select{border:1px solid #c9e2d1;border-radius:8px;background:white;padding:7px 10px;color:#24553e}
+@media(max-width:760px){.lang-switch button{padding:6px 7px;min-width:30px}.top-actions{gap:6px}.v3-grid{grid-template-columns:1fr}}
+
+/* V3.2 — clarity-first layout refinement; visual styles only. */
+:root{--radius:15px;--shadow:0 3px 16px rgba(18,60,43,.035)}
+html{scroll-padding-top:94px}
+body{background:#f7f9f7}
+.sidebar{padding:25px 13px 17px}
+.brand{margin:0 9px 28px}
+.nav-group{margin-bottom:15px}
+.nav-item{border-radius:10px;min-height:41px}
+.main{min-height:100vh}
+.topbar{height:68px;padding-inline:clamp(20px,3vw,38px);background:rgba(255,255,255,.96)}
+.content{max-width:1360px;padding:clamp(22px,3vw,36px) clamp(20px,3vw,38px) 80px}
+.page.active{display:flex;flex-direction:column;gap:0}
+.page-heading{order:-10;align-items:center;min-height:68px;margin-bottom:21px;flex-wrap:wrap}
+.page-heading h1{font-size:clamp(23px,2.1vw,29px);letter-spacing:-.6px;line-height:1.25}
+.page-heading .lead{font-size:12px;line-height:1.7;max-width:760px}
+.page-heading .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.page-heading .actions .btn{white-space:nowrap}
+.card{box-shadow:0 2px 14px rgba(16,62,50,.035);border-color:#e1eae2}
+.card-pad{padding:clamp(17px,2vw,25px)}
+.card-head{margin-bottom:15px}
+.grid,.stack{gap:16px}
+.metrics{gap:13px}
+.metric{box-shadow:none}
+.btn{transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
+.btn:focus-visible,.nav-item:focus-visible,button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #25835d;outline-offset:3px}
+.v3-panel{order:-5;padding:15px 18px;margin:0 0 20px;background:#fcfefd;border:1px solid #e1eae2;border-radius:14px;box-shadow:none}
+.v3-panel h3{font-size:13px;margin-bottom:5px}
+.v3-panel>p{line-height:1.7;max-width:900px}
+.v3-grid{gap:9px;margin-top:10px}
+.v3-cell{background:#f7faf7;border-color:#e5eee7;padding:11px 13px;line-height:1.7}
+.v3-cell strong{font-size:11px}
+.v3-badge{font-weight:600}
+.lang-switch{white-space:nowrap}
+table{max-width:100%}
+.report-paper{overflow-wrap:anywhere}
+.page :is(.card,.v3-panel){min-width:0}
+@media(max-width:1050px){
+ .page-heading{align-items:flex-start}
+ .v3-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .topbar{padding-inline:20px}
+ .content{padding-inline:22px}
+}
+@media(max-width:760px){
+ html{scroll-padding-top:74px}
+ .topbar{height:62px;padding-inline:14px}
+ .content{padding:20px 14px 70px}
+ .page-heading{gap:12px;margin-bottom:17px}
+ .page-heading h1{font-size:23px}
+ .page-heading .actions{width:100%;gap:7px}
+ .page-heading .actions .btn{flex:1 1 auto;justify-content:center}
+ .card-pad{padding:16px}
+ .grid,.stack{gap:12px}
+ .v3-grid{grid-template-columns:1fr}
+ .v3-panel{padding:14px;margin-bottom:15px}
+ .v3-cell{padding:10px 12px}
+ .top-actions{gap:5px}
+ .lang-switch{padding:2px}
+ .lang-switch button{padding:5px 6px}
+}
+@media(prefers-reduced-motion:reduce){
+ .page{animation:none!important}
+ .btn{transition:none!important}
+ html{scroll-behavior:auto!important}
+}
+
+</style>
+</head>
+<body>
+<!-- 独立品牌产品演示：单文件、无外部依赖、无第三方平台生成标识。 -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<symbol id="ico-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="ico-package" viewBox="0 0 24 24"><path d="M12 2.5 21 7v10l-9 4.5L3 17V7l9-4.5Zm0 9L3.2 7M12 11.5 20.8 7M12 11.5v10M7.5 4.8l9 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="ico-shield" viewBox="0 0 24 24"><path d="m12 2 8 3.7v6.2c0 5-3 8.1-8 10.1-5-2-8-5.1-8-10.1V5.7L12 2Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.7 2.7 5.3-5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="ico-camera" viewBox="0 0 24 24"><path d="M3 7h4l2-3h6l2 3h4v12H3V7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="ico-file" viewBox="0 0 24 24"><path d="M6 2.5h8l5 5V21H6V2.5Zm8 0v5h5M9 12h7M9 16h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="ico-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v17H6a2 2 0 0 0-2 2V5Zm0 14a2 2 0 0 1 2-2h14M9 7h7M9 11h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="ico-life" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m5.7 5.7 4 4m4.6 4.6 4 4m0-12.6-4 4m-4.6 4.6-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="ico-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-arrow-up" viewBox="0 0 24 24"><path d="m5 16 6-6 4 4 5-8m-5 0h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-check" viewBox="0 0 24 24"><path d="m4 12 5.5 5.5L20 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-alert" viewBox="0 0 24 24"><path d="M10.4 4.2 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.6 4.2a1.85 1.85 0 0 0-3.2 0Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 9v5m0 3v.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="ico-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="ico-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v4h16v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-upload" viewBox="0 0 24 24"><path d="M12 17V5m-4 4 4-4 4 4M4 16v5h16v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-refresh" viewBox="0 0 24 24"><path d="M20 9a8 8 0 0 0-14-3L3 9m0-5v5h5M4 15a8 8 0 0 0 14 3l3-3m0 5v-5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ico-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="ico-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 4h6m-9 3 1 14h10l1-14M10 11v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="ico-edit" viewBox="0 0 24 24"><path d="m4 16 11.7-11.7a2 2 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="ico-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="ico-spark" viewBox="0 0 24 24"><path d="m12 2 2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6L12 2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="ico-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6m0-10v.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="ico-external" viewBox="0 0 24 24"><path d="M12 5H5v14h14v-7m-7 0 9-9m-7 0h7v7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+<div class="shell">
+<aside class="sidebar">
+ <div class="brand">
+  <div class="brand-mark"><svg viewBox="0 0 36 36" fill="none"><path d="M28 7C16 6 8 13 8 23c0 5 5 8 9 6 7-4 13-14 11-22Z" fill="#28835C"/><path d="M8 30c4-10 10-14 19-19" stroke="#E8FFD0" stroke-width="2.3" stroke-linecap="round"/><path d="M19 17c1 4 3 6 6 7" stroke="#C9F6A8" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+  <div><div class="brand-name">绿包智造</div><div class="brand-sub">GREENPACK STUDIO</div></div>
+ </div>
+ <div class="nav-label">工作空间 / WORKSPACE</div>
+ <nav class="nav" aria-label="主导航">
+  <button class="nav-btn active" data-nav="dashboard"><svg class="nav-ico"><use href="#ico-grid"/></svg>合规驾驶舱</button>
+  <button class="nav-btn" data-nav="builder"><svg class="nav-ico"><use href="#ico-package"/></svg>包装组件建模</button>
+  <button class="nav-btn" data-nav="assessment"><svg class="nav-ico"><use href="#ico-shield"/></svg>智能合规评估</button>
+  <button class="nav-btn" data-nav="media"><svg class="nav-ico"><use href="#ico-camera"/></svg>证据与认证资料</button>
+ </nav>
+ <div class="nav-label">成果与服务 / MANAGEMENT</div>
+ <nav class="nav">
+  <button class="nav-btn" data-nav="reports"><svg class="nav-ico"><use href="#ico-file"/></svg>报告与 DoC</button>
+  <button class="nav-btn" data-nav="regulations"><svg class="nav-ico"><use href="#ico-book"/></svg>法规与 AI 智库</button>
+  <button class="nav-btn" data-nav="service"><svg class="nav-ico"><use href="#ico-life"/></svg>服务与工单</button>
+ </nav>
+ <div class="side-bottom">
+  <div class="reg-side"><small>REGULATION TRACKER</small><b>EU 2025/40</b><p>PPWR 已自 2026.08.12 开始适用</p></div>
+  <div class="side-foot">© 2026 绿包智造 · 独立演示版</div>
+ </div>
+</aside>
+<main class="main">
+ <header class="topbar">
+  <div class="breadcrumb"><span>绿包智造</span><span> / </span><strong id="topTitle">合规驾驶舱</strong></div>
+  <div class="top-actions"><div class="lang-switch" role="group" aria-label="Language / 语言"><button type="button" data-lang="zh" aria-pressed="true">中文</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+   <span class="top-pill"><span class="pulse"></span>可信数据快照 · 2026.11</span>
+   <button class="btn sm desktop-only" data-action="export-state"><svg class="icon"><use href="#ico-download"/></svg>导出演示数据</button>
+   <button class="btn sm dark" data-action="tour"><svg class="icon"><use href="#ico-spark"/></svg>演示导览</button>
+   <div class="avatar" title="绿包智造合规工作台"><svg class="icon" style="color:#267953"><use href="#ico-shield"/></svg></div>
+  </div>
+ </header>
+ <div class="content">
+  <section class="page active" id="page-dashboard">
+   <div class="page-heading">
+    <div><div class="eyebrow">COMMAND CENTER / OVERVIEW</div><h1>合规驾驶舱</h1><p class="lead" id="welcomeText">用一张工作台，看清包装的材料、证据和法规风险。</p></div>
+    <div class="actions"><span class="pill green">● 系统就绪</span><button class="btn" data-action="restore"><svg class="icon"><use href="#ico-refresh"/></svg>重置示例</button></div>
+   </div>
+   <div class="hero">
+    <div class="hero-copy"><div class="eyebrow">PACKAGING COMPLIANCE, MADE CLEAR</div><h2>让每一项合规判断<br>都有可信依据。</h2><p>法规原文、供应商证据、审核记录与 AI 辅助研判，汇聚为一套可追溯的包装合规工作流程。</p>
+     <div class="actions"><button class="btn primary" data-nav="regulations">进入 AI 合规智库 <svg class="icon"><use href="#ico-arrow"/></svg></button><button class="btn ghost" data-nav="builder">编辑包装方案</button></div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 310 240" fill="none">
+       <ellipse cx="155" cy="207" rx="116" ry="19" fill="#0B33274D"/>
+       <path d="M40 111 151 57l113 55-113 58L40 111Z" fill="#EDDEA7"/>
+       <path d="M40 111v66l111 54v-61L40 111Z" fill="#C1A96F"/>
+       <path d="M151 170v61l113-56v-63l-113 58Z" fill="#E5C98A"/>
+       <path d="m96 84 113 55 27-14-111-55-29 14Z" fill="#F9E7B7"/>
+       <path d="m97 138 0 60 23 10v-58l-23-12Z" fill="#EEDAA6"/>
+       <path d="M186 154v32l52-25v-31l-52 24Z" fill="#F9EFD0"/>
+       <path d="m194 163 28-14M194 171l21-10" stroke="#98B49B" stroke-width="2.5" stroke-linecap="round"/>
+       <path d="M96 84 151 57l113 55-29 13-110-55" stroke="#FDF4CB" stroke-width="2" stroke-linejoin="round"/>
+       <path d="m151 57 0 59m0 54v61" stroke="#9B8F65" stroke-width="2" opacity=".38"/>
+       <path d="m185 42 35-17 45 22-36 17-44-22Z" fill="#C2E4C0"/>
+       <path d="M185 42v30l44 21V64l-44-22Z" fill="#7EB18B"/>
+       <path d="m229 64 36-17v29l-36 17V64Z" fill="#A4D3A9"/>
+       <path d="m78 64 25-12 32 16-26 12-31-16Z" fill="#D1E6C7"/>
+       <path d="M78 64v27l31 14V80L78 64Z" fill="#80B68D"/>
+       <path d="m109 80 26-12v26l-26 11V80Z" fill="#A5D2A7"/>
+       <circle cx="239" cy="38" r="13" fill="#E6F3A9"/>
+       <path d="m234 38 4 4 7-8" stroke="#2A7152" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+       <circle cx="57" cy="46" r="4" fill="#E3F0B7"/><circle cx="281" cy="140" r="3" fill="#ACD9BD"/>
+      </svg>
+      <div class="hero-float">✓ 从包装到报告，流程闭环</div>
+    </div>
+   </div>
+   <div class="metrics" id="metrics"></div>
+
+   <div class="source-strip">
+    <div class="source-story">
+      <div><div class="tag">TRACEABLE COMPLIANCE · 升级亮点</div><h3>从 AI 回答，走向有出处的合规决策</h3><p>法规条款与官方发布日期可追溯，检测报告与供应商声明独立入库，审查动作形成记录。真正的在线模型需要安全的后端接口。</p></div>
+      <div class="actions"><button class="btn dark sm" data-nav="regulations">官方法规知识库</button><button class="btn sm" data-nav="media">进入证据台账</button></div>
+    </div>
+    <div class="source-ledger">
+      <div class="source-ledger-head"><b>可信数据链</b><span class="pill green">2026.11 知识快照</span></div>
+      <div class="source-ledger-row"><span>正式法规来源</span><strong>EUR-Lex · EU 2025/40</strong></div>
+      <div class="source-ledger-row"><span>欧盟委员会实施指南</span><strong>2026-06-10</strong></div>
+      <div class="source-ledger-row"><span>官方常见问题 FAQ</span><strong>2026-08-03</strong></div>
+      <div class="source-ledger-row"><span>在线 AI 模型状态</span><strong id="dashboardAiMode">未连接</strong></div>
+    </div>
+   </div>
+
+   <div class="grid two">
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>材料构成分析</h2><p>当前包装方案 · 重量分布</p></div><button class="link-btn" data-nav="builder">管理组件 <svg class="icon sm"><use href="#ico-arrow"/></svg></button></div><div class="material-chart" id="materialsOverview"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>当前包装组件</h2><p>基于已记录的包装 BOM</p></div><button class="link-btn" data-nav="builder">查看全部</button></div><div id="componentsOverview"></div></div>
+     <div class="banner"><svg class="icon lg"><use href="#ico-info"/></svg><div class="body"><b>关于筛查结果</b><p>平台中的“设计优化指数”为演示性内部指标，不是 PPWR 官方可回收性分级，也不构成合规认证。</p></div></div>
+    </div>
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>合规健康度</h2><p>关键要求与文件准备状态</p></div><button class="link-btn" data-nav="assessment">完整核查 <svg class="icon sm"><use href="#ico-arrow"/></svg></button></div><div id="readinessOverview"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>优先处理事项</h2><p>聚焦影响评估可信度的下一步</p></div><button class="link-btn" data-nav="service">查看工单</button></div><div id="tasksOverview"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>法规关键里程碑</h2><p>以正式公布法规和后续实施法案为准</p></div></div><div class="timeline" id="timelineOverview"></div></div>
+    </div>
+   </div>
+  </section>
+
+  <section class="page" id="page-builder">
+   <div class="page-heading"><div><div class="eyebrow">PACKAGE STUDIO / BUILD</div><h1>包装组件建模</h1><p class="lead">建立材料、重量、层级与工艺的数字化包装 BOM。</p></div>
+    <div class="actions"><button class="btn" data-action="restore"><svg class="icon"><use href="#ico-refresh"/></svg>恢复示例</button><button class="btn primary" data-nav="assessment">开始风险评估 <svg class="icon"><use href="#ico-arrow"/></svg></button></div></div>
+   <div class="grid two">
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>01 · 产品与包装信息</h2><p>数据在本设备自动保存</p></div><span class="pill green">本地已启用</span></div>
+      <div class="form-grid">
+       <div class="field span2"><label for="productName">产品 / 项目名称</label><input id="productName" placeholder="例如：陶瓷餐具出口套装"></div>
+       <div class="field"><label for="destination">目标销售国家</label><select id="destination"><option>德国</option><option>法国</option><option>意大利</option><option>西班牙</option><option>荷兰</option><option>其他欧盟成员国</option></select></div>
+       <div class="field"><label for="packagingType">当前评估包装类型</label><select id="packagingType"><option value="transport">运输包装</option><option value="sales">销售包装</option><option value="grouped">集合包装</option><option value="ecommerce">电商包装</option></select></div>
+       <div class="field"><label for="voidRatio">估计空隙率（%）</label><input id="voidRatio" type="number" min="0" max="100" step="0.1" placeholder="未提供可留空"><span class="hint">示例自报值，不代替法规规定的测算方法</span></div>
+       <div class="field"><div class="field-label">是否属于食品接触包装</div><div class="toggle-line"><span style="font-size:11px;color:#5e7667">适用 PPWR 食品接触 PFAS 限值核对</span><label class="switch"><input type="checkbox" id="foodContact"><span></span></label></div></div>
+      </div>
+     </div>
+     <div class="card card-pad"><div class="card-head"><div><h2>02 · 添加或编辑包装组件</h2><p>录入独立组件以获得更可解释的评估</p></div><span class="pill blue">BOM</span></div>
+      <form id="componentForm" class="form-grid">
+       <div class="field span2"><label for="componentName">组件名称</label><input id="componentName" placeholder="例如：瓦楞外箱" required maxlength="80"></div>
+       <div class="field"><label for="material">材料类型</label><select id="material"></select></div>
+       <div class="field"><label for="weight">单套重量（克）</label><input id="weight" type="number" min="0.1" max="100000" step="0.1" required placeholder="例如：120"></div>
+       <div class="field"><label for="layer">组件所在层级</label><select id="layer"><option value="transport">运输包装</option><option value="sales">销售包装</option><option value="inner">内包装</option><option value="grouped">集合包装</option></select></div>
+       <div class="field"><label for="compProof">材料证明状态</label><select id="compProof"><option value="no">待补证据</option><option value="yes">已取得材料证明</option></select></div>
+       <div class="field span2"><label for="process">工艺 / 备注</label><input id="process" placeholder="例如：四色水性印刷、无复合层"></div>
+       <div class="field span2"><div class="actions"><button class="btn primary" id="saveComponentButton" type="submit"><svg class="icon"><use href="#ico-plus"/></svg>添加到包装清单</button><button class="btn" type="button" id="cancelEdit" style="display:none">取消编辑</button></div></div>
+      </form>
+     </div>
+     <div class="card card-pad"><div class="card-head"><div><h2>03 · 包装组件清单</h2><p>修改材料或重量后，所有评估自动更新</p></div><span class="pill gray" id="bomCount">0 项</span></div>
+      <div class="table-wrap"><table class="data-table"><thead><tr><th>组件 / 层级</th><th>材料</th><th>重量</th><th>材料凭证</th><th>操作</th></tr></thead><tbody id="bomBody"></tbody></table></div>
+      <div class="table-footer"><span class="lead" id="bomTotal">共 0 g</span><button class="btn sm" data-action="export-csv"><svg class="icon"><use href="#ico-download"/></svg>导出 BOM</button></div>
+     </div>
+    </div>
+    <div class="stack">
+     <div id="builderScore"></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>方案优化预演</h2><p>尝试更易回收的组件组合</p></div></div>
+      <div class="proposal"><div class="tag">SMART MATERIAL SWITCH</div><h3 style="margin-top:8px">替换 EPS 缓冲材料</h3><p>将 EPS 缓冲改为纸浆模塑，计算优化前后的内部评分差异。实际替代仍需验证保护性、成本和供应链可用性。</p><button class="btn primary" data-action="optimize"><svg class="icon"><use href="#ico-spark"/></svg>应用纸基优化建议</button></div>
+      <div id="builderAdvice" class="section-gap"></div>
+     </div>
+     <div class="card card-pad"><div class="card-head"><div><h2>操作说明</h2><p>面向客户演示的推荐顺序</p></div></div>
+      <div class="timeline">
+       <div class="time-row active"><div class="time-date">STEP 01</div><div><div class="time-title">填写或载入 BOM</div><div class="time-desc">定义材料、重量及包装层级</div></div></div>
+       <div class="time-row"><div class="time-date">STEP 02</div><div><div class="time-title">运行风险筛查</div><div class="time-desc">定位材料与证据缺口</div></div></div>
+       <div class="time-row"><div class="time-date">STEP 03</div><div><div class="time-title">优化并生成草稿</div><div class="time-desc">导出初步审查报告与 DoC 资料清单</div></div></div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <section class="page" id="page-assessment"><div class="v3-panel" id="v3-assessment">
+<h3>V3.0 · 合规结论边界与可追溯核查</h3>
+<p>内部优化指数仅用于方案比较，不是 PPWR 法定等级，也不代表符合性认证。以下事项需要结合具体产品、目标市场、法规生效日期和原始证据逐项复核。</p>
+<div class="v3-grid" id="v3-assessment-grid"></div></div>
+   <div class="page-heading"><div><div class="eyebrow">COMPLIANCE SCREENING / ANALYSIS</div><h1>智能合规评估</h1><p class="lead">按 PPWR 重点条款逐项检查材料和资料准备情况。</p></div><div class="actions"><span class="pill amber">辅助筛查 · 非法定认证</span><button class="btn primary" data-action="run-assessment"><svg class="icon"><use href="#ico-shield"/></svg>重新执行检查</button></div></div>
+   <div class="card card-pad" style="margin-bottom:17px"><div class="compliance-summary" id="assessmentSummary"></div></div>
+   <div class="assess-proof-note">
+     <div><b>法规快照与证据关联</b><p>以下判定由本地规则生成，依据为官方公开文本的人工整理摘要。材料分数并非法定评定结果。</p></div>
+     <div class="actions"><span class="pill blue">来源版本 2026.11</span><button class="btn sm" data-nav="regulations">查看法规依据</button><button class="btn sm" data-nav="media">进入证据台账</button></div>
+   </div>
+   <div class="trace-strip" id="assessmentTrace"></div>
+   <div class="grid two">
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>法规核查矩阵</h2><p>结合已录入信息提示潜在风险与缺失证据</p></div></div><div class="check-list" id="assessmentChecks"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>组件级筛查明细</h2><p>回收设计倾向分数仅供内部比较</p></div><button class="link-btn" data-nav="builder">编辑 BOM</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>组件</th><th>重量占比</th><th>模拟分</th><th>建议</th></tr></thead><tbody id="componentAnalysis"></tbody></table></div></div>
+    </div>
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>证据准备清单</h2><p>勾选代表企业已取得并自行核验相关文件</p></div></div><div class="proof-grid" id="proofChecklist"></div><div class="soft-note" style="margin-top:12px">勾选仅标记“已取得资料”，不代表系统确认检测结果合格；正式投放市场前应完成适用的符合性评估。</div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>优先整改建议</h2><p>从易落地的设计调整开始</p></div></div><div id="assessmentRecommendations"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>评估边界</h2><p>避免在商业演示中产生误解</p></div></div><div class="callout">PPWR 的正式可回收性能等级须依据相关授权法案及实施规则计算。本原型采用人为设定的材料权重分，用于方案比较；不会自动作出“确定违法”或“可上市”的法定结论。</div></div>
+    </div>
+   </div>
+   <div class="actions" style="margin-top:20px"><button class="btn primary" data-nav="reports">汇总报告与 DoC 草稿 <svg class="icon"><use href="#ico-arrow"/></svg></button><button class="btn" data-nav="media">补充检测报告附件</button></div>
+  </section>
+
+  <section class="page" id="page-media"><div class="v3-panel" id="v3-evidence">
+<h3>V3.0 · 证据质量控制</h3>
+<p>“已登记”不等于“已核验”。复核必须关联原件和凭证编号；已过期凭证不计入有效复核。请同时核实报告适用产品、样品、测试范围和出具机构。</p>
+<div class="v3-grid" id="v3-evidence-grid"></div></div>
+   <div class="page-heading"><div><div class="eyebrow">EVIDENCE VAULT / ARCHIVE</div><h1>证据与认证资料</h1><p class="lead">现场拍照、上传材料文件，建立更完整的证据链。</p></div><span class="pill green">文件保留在当前浏览器</span></div>
+   
+   <div class="preview-hero-banner">
+      <svg class="icon lg" style="color:#2f9668"><use href="#ico-shield"/></svg>
+      <div class="content-text"><h3>每份认证证据都有原始来源、报告编号、出具机构与核验状态。</h3><p>AI 可以整理和找缺口，但不能替代真实实验室报告或制造商正式声明。</p></div>
+      <button class="btn sm" data-nav="regulations">关联法规</button>
+   </div>
+   <div class="evidence-kpis" id="evidenceKpis"></div>
+   <div class="evidence-layout" style="margin-bottom:19px">
+     <div class="card card-pad">
+       <div class="card-head"><div><h2>证据核验台账</h2><p>所有“已人工复核”状态均由操作者标记，不代表官方验真</p></div><span class="pill blue" id="evidenceCount">0 份</span></div>
+       <div id="evidenceList"></div>
+     </div>
+     <div class="stack">
+       <div class="card card-pad">
+         <div class="card-head"><div><h2>录入检测报告 / 认证资料</h2><p>建议先在下方上传附件，再建立证据记录</p></div></div>
+         <form id="evidenceForm" class="form-grid">
+           <div class="field span2"><label for="evName">证据名称 *</label><input id="evName" maxlength="120" required placeholder="例如：纸板四种重金属检测报告"></div>
+           <div class="field"><label for="evKind">证据类型</label><select id="evKind"><option value="heavy">重金属检测</option><option value="pfas">PFAS 检测</option><option value="material">供应商材料声明</option><option value="technical">技术文件 / DoC 底稿</option><option value="epr">EPR 记录</option><option value="other">其他附件</option></select></div>
+           <div class="field"><label for="evComponent">关联包装组件</label><select id="evComponent"></select></div>
+           <div class="field"><label for="evIssuer">出具机构 / 供应商 *</label><input id="evIssuer" maxlength="100" required placeholder="例如：某检测实验室"></div>
+           <div class="field"><label for="evNumber">报告 / 凭证编号</label><input id="evNumber" maxlength="90" placeholder="原文件显示的编号"></div>
+           <div class="field"><label for="evIssue">签发日期</label><input id="evIssue" type="date"></div>
+           <div class="field"><label for="evExpiry">截止日期（如适用）</label><input id="evExpiry" type="date"></div>
+           <div class="field span2"><label for="evAttachment">关联已上传的附件</label><select id="evAttachment"></select></div>
+           <div class="field span2"><label for="evNote">核查备注</label><textarea id="evNote" maxlength="350" rows="2" placeholder="检测范围、样品编号、待核实事项等"></textarea></div>
+           <div class="field span2"><button class="btn primary" type="submit"><svg class="icon"><use href="#ico-plus"/></svg>录入证据 · 待人工核验</button></div>
+         </form>
+       </div>
+       <div class="card card-pad">
+         <div class="card-head"><div><h2>核查与操作记录</h2><p>本地演示的操作日志，可导出留档</p></div><button class="btn sm" data-action="export-audit"><svg class="icon"><use href="#ico-download"/></svg>导出日志</button></div>
+         <div id="auditList"></div>
+       </div>
+     </div>
+   </div>
+<div class="grid two">
+    <div class="stack">
+     <div class="card card-pad">
+      <div class="card-head"><div><h2>上传包装实物或证明文件</h2><p>支持 JPG / PNG / WebP / PDF</p></div></div>
+      <div class="field" style="max-width:280px;margin-bottom:14px"><label for="uploadType">文件归档类别</label><select id="uploadType"><option>包装实物</option><option>检测报告</option><option>材料标签</option><option>供应商声明</option></select></div>
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="选择文件上传">
+       <div class="upload-ico"><svg class="icon"><use href="#ico-upload"/></svg></div><h3>把文件拖进这里，或点击选择</h3><p>可一次上传多个文件 · 移动端可使用相机</p><div class="actions" style="justify-content:center"><button class="btn primary" type="button" data-action="choose-file">选择文件 <svg class="icon"><use href="#ico-arrow"/></svg></button><button class="btn" type="button" data-action="open-camera"><svg class="icon"><use href="#ico-camera"/></svg>手机拍照</button></div>
+      </div>
+      <input id="fileInput" type="file" accept="image/*,.pdf,application/pdf" multiple hidden>
+      <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
+      <div class="soft-note" style="margin-top:14px">单张图片不超过 1.2 MB 时可保存缩略图到浏览器本地存储。较大文件及 PDF 仅存元信息，正式上线需接入企业文件存储。不会上传到任何服务器。</div>
+     </div>
+     <div class="card card-pad"><div class="card-head"><div><h2>已归档附件</h2><p>用于演示材料台账与分类</p></div><span class="pill gray" id="fileCount">0 份</span></div><div class="file-grid" id="fileGrid"></div></div>
+    </div>
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>建议收集的文件</h2><p>以实际包装用途和供应商信息为准</p></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-camera"/></svg></div><div class="rule-text"><b>包装结构实物照片</b><small>外箱、内托、缓冲件及分离结构</small></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-shield"/></svg></div><div class="rule-text"><b>物质限制检测资料</b><small>重金属检测；食品接触时还需适用的 PFAS 资料</small></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-package"/></svg></div><div class="rule-text"><b>供应商材质与重量声明</b><small>材质、复合层、再生成分、克重等</small></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-file"/></svg></div><div class="rule-text"><b>符合性技术文件</b><small>按 PPWR 附件 VII 整理相关材料</small></div></div>
+     </div>
+     <div class="banner"><svg class="icon lg"><use href="#ico-info"/></svg><div class="body"><b>隐私与数据边界</b><p>本独立演示版本地运行，无服务器、无账户系统；真实商业部署应补充权限控制、加密存储与审计日志。</p></div></div>
+    </div>
+   </div>
+  </section>
+
+  <section class="page" id="page-reports"><div class="v3-panel" id="v3-reports">
+<h3>V3.0 · 双语报告导出</h3>
+<p>选择报告语言后，下载独立 HTML 报告（可在浏览器中打印或另存 PDF）。DoC 始终标注为未签署草稿，不构成正式符合性声明。</p>
+<label for="v3-report-language">报告语言 / Report language　</label>
+<select id="v3-report-language" class="v3-select"><option value="zh">中文</option><option value="en">English</option></select>
+<span class="v3-badge">草稿 / Draft only</span></div>
+   <div class="page-heading"><div><div class="eyebrow">REPORTS / DOCUMENTATION</div><h1>报告与 DoC 草稿</h1><p class="lead">一键汇总材料清单、筛查结论及符合性声明准备事项。</p></div>
+    <div class="actions"><button class="btn" data-action="export-html"><svg class="icon"><use href="#ico-download"/></svg>下载 HTML 报告</button><button class="btn primary" data-action="print-report"><svg class="icon"><use href="#ico-file"/></svg>打印 / 保存 PDF</button></div></div>
+   <div class="grid two">
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>项目合规筛查报告</h2><p>可编辑数据驱动生成 · 每次修改自动更新</p></div><span class="pill blue">REPORT PREVIEW</span></div><div id="reportPreview"></div></div>
+    </div>
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>EU DoC 符合性声明草稿</h2><p>采用附件 VIII 框架供企业审查补全</p></div><span class="pill amber">待企业签署</span></div><div id="docPreview"></div><div class="callout">本页仅为文件草稿与资料准备清单。正式 EU DoC 必须由负有责任的制造商在完成适用符合性评估后出具与签署。</div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>下一步：形成可审计文件包</h2><p>完整文件交付需要更多原始凭证</p></div></div><div id="reportSteps"></div><div class="actions" style="margin-top:14px"><button class="btn soft" data-nav="media">管理附件</button><button class="btn" data-nav="assessment">查看证据缺口</button></div></div>
+     <div class="banner"><svg class="icon lg"><use href="#ico-info"/></svg><div class="body"><b>PDF 导出说明</b><p>点击“打印 / 保存 PDF”，在浏览器打印窗口选择“另存为 PDF”，即可获得独立文档，无需登录其他平台。</p></div></div>
+    </div>
+   </div>
+  </section>
+
+  <section class="page" id="page-regulations"><div class="v3-panel" id="v3-regulations">
+<h3>V3.0 · 法规版本与适用日期</h3>
+<p>知识快照：2026-11-11。下列为平台内置来源索引，不代表已实时监测法规更新。实际适用义务及过渡期应以欧盟官方现行文本和适用的配套法规为准。</p>
+<div class="v3-grid">
+<div class="v3-cell"><strong>Regulation (EU) 2025/40</strong>主要适用起点：2026-08-12；不同义务有不同适用节点。<p><a target="_blank" rel="noopener noreferrer" href="https://eur-lex.europa.eu/eli/reg/2025/40/oj">EUR-Lex 官方原文</a></p></div>
+<div class="v3-cell"><strong>欧盟委员会 PPWR 专题</strong>关注后续实施文件、解释材料及更新。<p><a target="_blank" rel="noopener noreferrer" href="https://environment.ec.europa.eu/topics/waste-and-recycling/packaging-waste_en">官方专题页面</a></p></div>
+<div class="v3-cell"><strong>版本复核提醒</strong>在签发正式声明前，检查条款版本、实施日期、目标国要求和证据有效性。<p><span class="v3-badge">人工复核必需</span></p></div>
+</div></div>
+   <div class="page-heading"><div><div class="eyebrow">REGULATION LIBRARY / KNOWLEDGE</div><h1>法规与 AI 智库</h1><p class="lead">快速定位 PPWR 核心条款、适用节点和官方来源。</p></div><button class="btn" data-action="open-official"><svg class="icon"><use href="#ico-external"/></svg>查看欧盟法规原文</button></div>
+   
+   <div class="law-upgrade-intro"><span class="pill green">官方原文 + 人工整理快照</span><span class="pill blue">快照日期：2026-11-11</span><p>不是实时联网数据库；适用性受未来配套法案、业务角色与成员国要求影响。</p></div>
+   <div class="source-gallery" id="sourceGallery"></div>
+<div class="grid two" style="margin-bottom:19px">
+    <div class="card card-pad"><div class="card-head"><div><h2>法规关键词检索</h2><p>支持“PFAS / 空隙率 / 回收 / DoC / EPR”等关键词</p></div></div>
+     <div class="law-search"><svg class="icon"><use href="#ico-search"/></svg><input id="lawSearch" class="search-input" placeholder="搜索条款、材料或风险关键词…" autocomplete="off"></div>
+     <div class="filters" id="lawFilters"><button class="filter active" data-filter="all">全部条款</button><button class="filter" data-filter="current">已适用</button><button class="filter" data-filter="future">分阶段适用</button><button class="filter" data-filter="doc">文件与责任</button></div>
+     <div id="lawCount" class="lead"></div>
+    </div>
+    <div class="card card-pad"><div class="card-head"><div><h2>法规问答 · 可溯源 AI 助手</h2><p>离线法规检索始终可用；在线 AI 分析需安全后端连接</p></div></div>
+     <div class="query-modes"><span class="pulse"></span><strong id="aiModeLabel">检测 AI 服务中…</strong><span>模型密钥不会写入网页</span></div>
+     <div class="field"><label for="askInput">输入你的业务问题</label><textarea id="askInput" rows="3" placeholder="例如：泡沫缓冲是不是现在就违法？"></textarea></div>
+     <div class="actions" style="margin-top:12px"><button class="btn primary" data-action="answer"><svg class="icon"><use href="#ico-search"/></svg>本地依据检索</button><button class="btn soft" id="liveAiButton" data-action="ai-answer"><svg class="icon"><use href="#ico-spark"/></svg>AI 深度解读</button><button class="btn sm" data-action="ask-example">填入示例问题</button></div>
+     <p class="evidence-sup" style="margin:12px 0 0">隐私提示：启用在线 AI 后，问题、项目名称、材料及重量、证据类型/状态将发送给所配置的模型服务商；不会上传原始检测报告正文。敏感商业资料请先脱敏。</p><div id="askResult"></div><div id="liveAiResult"></div>
+    </div>
+   </div>
+   <div class="law-grid" id="lawGrid"></div>
+   <div class="soft-note" style="margin-top:18px">知识快照人工核对于 2026-11-11。这里展示可点击官方原文的法规摘要，并非实时法规数据库或自动认证。即使接入 AI，仍需责任主体复核。</div>
+  </section>
+
+  <section class="page" id="page-service">
+   <div class="page-heading"><div><div class="eyebrow">SERVICE DESK / TASKS</div><h1>服务与整改工单</h1><p class="lead">把合规建议转化为可以分派、跟踪、复查的行动。</p></div><button class="btn primary" data-action="new-task"><svg class="icon"><use href="#ico-plus"/></svg>创建整改事项</button></div>
+   <div class="actions" style="margin-bottom:18px"><button class="btn soft" data-nav="media"><svg class="icon"><use href="#ico-camera"/></svg>证据资料归档</button><button class="btn soft" data-nav="regulations"><svg class="icon"><use href="#ico-book"/></svg>法规检索智库</button></div>
+   <div class="service-hero" style="margin-bottom:18px"><div><div class="eyebrow" style="color:#b6dfc3">IMPLEMENTATION ROADMAP</div><h2>从一次评估，走向持续合规。</h2><p>材料整改、供应商取证、法规关注、责任追踪，一套流程协同推进。</p></div><button class="btn" data-nav="assessment">查看风险清单 <svg class="icon"><use href="#ico-arrow"/></svg></button></div>
+   <div class="grid two">
+    <div class="stack">
+     <div class="card card-pad"><div class="card-head"><div><h2>整改任务台账</h2><p>勾选完成状态将自动保留在本地</p></div><span class="pill gray" id="taskCount">—</span></div><div id="serviceTasks"></div></div>
+     <div class="card card-pad"><div class="card-head"><div><h2>服务边界与交付说明</h2><p>清楚展示能力，而不是做出无法兑现的承诺</p></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-refresh"/></svg></div><div class="rule-text"><b>法规版本跟踪</b><small>产品正式部署后可接入动态法规数据源</small></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-shield"/></svg></div><div class="rule-text"><b>检测和供应商取证</b><small>资料状态由企业确认，法定符合性需要正式审查</small></div></div>
+      <div class="rule-row"><div class="rule-icon"><svg class="icon"><use href="#ico-file"/></svg></div><div class="rule-text"><b>文件与签署流程</b><small>报告模板自动组装，不代替制造商签署或机构认定</small></div></div>
+     </div>
+    </div>
+    <div class="stack">
+     <div class="price-card"><span class="pill green">企业版方案 · 价格演示</span><h2 style="margin:12px 0 2px">从评估到交付的一体化工作台</h2><p class="lead">建议商业套餐展示，非在线购买页面</p><div class="price">¥1,999 <small>/ 年 / 方案示例</small></div>
+      <ul class="features"><li><svg class="icon sm"><use href="#ico-check"/></svg>完整包装 BOM 与版本对比</li><li><svg class="icon sm"><use href="#ico-check"/></svg>PPWR 重点规则辅助筛查与证据清单</li><li><svg class="icon sm"><use href="#ico-check"/></svg>合规报告与 DoC 草稿生成</li><li><svg class="icon sm"><use href="#ico-check"/></svg>资料归档及整改任务台账</li></ul>
+      <button class="btn primary" data-action="commercial" style="width:100%">查看商业化实施说明 <svg class="icon"><use href="#ico-arrow"/></svg></button>
+     </div>
+     <div class="card card-pad"><div class="card-head"><div><h2>演示环境管理</h2><p>无需账户；数据保存在当前浏览器</p></div></div><p class="lead" style="line-height:1.85">可在展示前恢复示例，或将当前状态导出为 JSON 备份。浏览器清理站点数据后，记录可能丢失。</p><div class="actions" style="margin-top:15px"><button class="btn" data-action="export-state">导出 JSON 数据</button><button class="btn danger" data-action="restore">恢复默认演示</button></div></div>
+    </div>
+   </div>
+   <div class="soft-note" style="margin-top:18px">责任边界：企业对数据准确性、适用义务判断和实际出具文件负责。本演示产品不提供通关保证、官方认证、实时法律意见，也不声称已经与律所或检测机构建立合作。</div>
+  </section>
+ </div>
+</main>
+</div>
+<nav id="mobileNav" aria-label="移动端导航">
+<button class="mobile-btn active" data-nav="dashboard"><svg class="icon"><use href="#ico-grid"/></svg>总览</button>
+<button class="mobile-btn" data-nav="builder"><svg class="icon"><use href="#ico-package"/></svg>建模</button>
+<button class="mobile-btn" data-nav="assessment"><svg class="icon"><use href="#ico-shield"/></svg>评估</button>
+<button class="mobile-btn" data-nav="reports"><svg class="icon"><use href="#ico-file"/></svg>报告</button>
+<button class="mobile-btn" data-nav="service"><svg class="icon"><use href="#ico-life"/></svg>更多</button>
+</nav>
+<div class="modal-backdrop" id="modalBackdrop" role="presentation">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <button class="modal-close" id="modalClose" aria-label="关闭"><svg class="icon"><use href="#ico-plus" style="transform:rotate(45deg);transform-origin:center"/></svg></button>
+ <div class="modal-step" id="modalStep"></div><h2 id="modalTitle"></h2><p id="modalBody"></p><div class="modal-actions" id="modalActions"></div>
+</div>
+</div>
+<div class="toast" id="toast"><svg class="icon"><use href="#ico-check"/></svg><span id="toastText"></span></div>
+<div id="printDoc"></div>
+
+<script>
+(function(){
+"use strict";
+const EU="https://eur-lex.europa.eu/eli/reg/2025/40/oj";
+const EC="https://environment.ec.europa.eu/topics/waste-and-recycling/packaging-waste_en";
+
+const SNAPSHOT="2026-11-11";
+const SOURCES=[
+ {id:"PPWR",short:"法规正文",title:"Regulation (EU) 2025/40 · PPWR",org:"EUR-Lex · Official Journal",published:"2025-01-22",applied:"2026-08-12（部分条款分阶段）",url:"https://eur-lex.europa.eu/eli/reg/2025/40/oj",desc:"欧盟包装与包装废弃物正式法规，适用义务应以条文及后续修订为准。",type:"法规正文"},
+ {id:"GUIDE",short:"官方实施指南",title:"Commission Guidance · C/2026/3084",org:"European Commission / EUR-Lex",published:"2026-06-10",applied:"解释性文件，不替代法规",url:"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52026XC03084",desc:"欧洲委员会发布的 PPWR 实施指南，针对部分条款作解释。",type:"官方指导"},
+ {id:"FAQ",short:"官方 FAQ",title:"PPWR Frequently Asked Questions",org:"European Commission · DG ENV",published:"2026-08-03",applied:"辅助解读，不替代法规",url:"https://environment.ec.europa.eu/publications/faq-packaging-and-packaging-waste-regulation-ppwr_en",desc:"欧盟委员会官方 PPWR 常见问题，帮助确认实际适用场景。",type:"官方问答"},
+ {id:"EC",short:"实施跟踪",title:"PPWR Implementation & Timeline",org:"European Commission · DG ENV",published:"持续更新",applied:"各实施法案时间节点不一",url:"https://green-forum.ec.europa.eu/green-business/packaging-and-packaging-waste-regulation-implementation_en",desc:"查看实施指南、配套法案及正在制定的措施。",type:"实施动态"},
+ {id:"ECHA",short:"化学信息",title:"ECHA CHEM · Chemicals Database",org:"European Chemicals Agency",published:"动态信息库",applied:"视具体化学品限制而定",url:"https://echa.europa.eu/echa-chem/",desc:"提供化学物质监管背景信息；不包含客户包装的真实检测值。",type:"化学信息"},
+ {id:"LUCID",short:"国家登记",title:"德国 LUCID · Public Register",org:"Zentrale Stelle Verpackungsregister",published:"动态登记",applied:"视生产者角色与德国法律而定",url:"https://www.verpackungsregister.org/en/foundation-authority/public-registers",desc:"德国生产者登记公开查询入口；登记不等于完全 EPR 履责。",type:"登记查询"}
+];
+const SOURCE_BY_ID=Object.fromEntries(SOURCES.map(x=>[x.id,x]));
+const EVIDENCE_KINDS={heavy:"重金属检测",pfas:"PFAS 检测",material:"供应商材料声明",technical:"技术文件 / DoC 底稿",epr:"EPR 记录",other:"其他证明"};
+const REVIEW_STATES={pending:{label:"待人工核验",color:"amber"},reviewed:{label:"已人工复核",color:"green"},needs_info:{label:"资料待补充",color:"blue"},rejected:{label:"不予采用",color:"red"}};
+let aiBackendAvailable=false, aiBackendMode="offline", aiRequestPending=false;
+
+const STORAGE="greenpack-ppwr-demo-v3";
+const MAT={
+ paper:{name:"瓦楞纸 / 纸板",score:88,group:"纸基材料",color:"#7aad86",tip:"关注覆膜、油墨、粘合剂与分拣条件"},
+ pulp:{name:"纸浆模塑",score:90,group:"纸基材料",color:"#7aad86",tip:"验证缓冲性能、可分离性及当地回收体系"},
+ pe:{name:"单一 PE 薄膜",score:58,group:"塑料",color:"#8eacd2",tip:"关注薄膜收集渠道及与纸基组件分离"},
+ pp:{name:"单一 PP 塑料",score:65,group:"塑料",color:"#8eacd2",tip:"需结合包装类型和实际回收路径验证"},
+ eps:{name:"EPS 发泡塑料",score:18,group:"塑料",color:"#8eacd2",tip:"部分地区收集与分拣困难；建议比较纸浆缓冲"},
+ composite:{name:"不可分离复合材",score:28,group:"复合 / 其他",color:"#e2b879",tip:"多材复合层可能影响现有回收流程"},
+ aluminum:{name:"铝材",score:85,group:"金属",color:"#7daba4",tip:"关注与其他组件分离和清洁度"},
+ other:{name:"其他 / 待识别",score:45,group:"复合 / 其他",color:"#e2b879",tip:"应补齐材质与回收路径数据"}
+};
+const GROUP_COLORS={"纸基材料":"#7aad86","塑料":"#8eacd2","金属":"#7daba4","复合 / 其他":"#e2b879"};
+const LAYERS={transport:"运输包装",inner:"内包装",sales:"销售包装",grouped:"集合包装",ecommerce:"电商包装"};
+const INITIAL={
+ product:"陶瓷餐具出口套装",destination:"德国",packagingType:"transport",voidRatio:42,foodContact:false,
+ components:[
+  {id:"c1",name:"瓦楞纸外箱",material:"paper",weight:320,layer:"transport",process:"水性印刷 · 单一纸基",proof:true},
+  {id:"c2",name:"纸浆模塑内托",material:"pulp",weight:110,layer:"inner",process:"植物纤维模塑",proof:true},
+  {id:"c3",name:"PE 防尘保护袋",material:"pe",weight:25,layer:"inner",process:"可分离单层 PE",proof:false},
+  {id:"c4",name:"EPS 缓冲块",material:"eps",weight:40,layer:"inner",process:"可拆卸泡沫",proof:false}
+ ],
+ proof:{heavy:false,pfas:false,epr:false,technical:false},
+ evidence:[],audit:[],
+ files:[],
+ tasks:[
+  {id:"t1",title:"向供应商索取重金属检测依据",description:"包装与组件涉及铅、镉、汞、六价铬限值核对",done:false},
+  {id:"t2",title:"验证 EPS 缓冲的纸基替代方案",description:"同步核查跌落测试、成本与包装保护性",done:false},
+  {id:"t3",title:"确认目标国 EPR 注册义务",description:"核对生产者身份及当地登记、代表等适用要求",done:false}
+ ],
+ changedAt:null
+};
+let state=load(), current="dashboard", editing=null, lawFilter="all", tourStep=0, toastTimeout;
+const EL=id=>document.getElementById(id);
+const ic=(name,small=false)=>`<svg class="icon${small?" sm":""}" aria-hidden="true"><use href="#ico-${name}"></use></svg>`;
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("zh-CN",{maximumFractionDigits:1});
+function clone(obj){return JSON.parse(JSON.stringify(obj))}
+const now=()=>new Date().toLocaleDateString("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit"});
+const ID=prefix=>prefix+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function load(){
+ try{
+  const obj=JSON.parse(localStorage.getItem(STORAGE)||"null");
+  if(obj&&Array.isArray(obj.components)&&Array.isArray(obj.tasks)){
+   return {...clone(INITIAL),...obj,proof:{...INITIAL.proof,...(obj.proof||{})},files:Array.isArray(obj.files)?obj.files:[],evidence:Array.isArray(obj.evidence)?obj.evidence:[],audit:Array.isArray(obj.audit)?obj.audit:[]};
+  }
+ }catch(e){}
+ return clone(INITIAL);
+}
+function save(){
+ state.changedAt=new Date().toISOString();
+ try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(e){
+  if(state.files.some(f=>f.preview)){state.files.forEach(f=>{f.preview=null});try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}
+  toast("本地空间不足：文件缩略图未持久保存，其他数据仍可继续使用。");
+ }
+}
+function analyze(){
+ const comps=state.components.filter(c=>Number(c.weight)>0), total=comps.reduce((s,c)=>s+Number(c.weight),0);
+ const raw=total?comps.reduce((s,c)=>s+Number(c.weight)*(MAT[c.material]?.score??45),0)/total:0;
+ const score=Math.round(raw),level=total?(score>=85?"优":score>=70?"良":score>=50?"需改进":"高风险"):"待建模";
+ const missingMaterials=comps.filter(c=>!c.proof).length;
+ const eps=comps.some(c=>c.material==="eps"),composite=comps.some(c=>c.material==="composite");
+ const pendingProof=Object.entries(state.proof).filter(([k,v])=>!v&&(k!=="pfas"||state.foodContact)).length;
+ return {comps,total,score,level,missingMaterials,eps,composite,pendingProof,
+  risks:(eps?1:0)+(composite?1:0)+(state.voidRatio!==""&&Number(state.voidRatio)>50&&state.packagingType!=="sales"?1:0),
+  ready:total>0&&pendingProof===0&&missingMaterials===0
+ };
+}
+function status(label,type){return `<span class="pill ${type}">${label}</span>`}
+function titleText(){return ({
+ dashboard:"合规驾驶舱",builder:"包装组件建模",assessment:"智能合规评估",media:"证据与认证资料",
+ reports:"报告与 DoC",regulations:"法规与 AI 智库",service:"服务与工单"
+})[current]}
+function nav(name){
+ if(!EL("page-"+name))return;
+ current=name;
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+name));
+ document.querySelectorAll("[data-nav]").forEach(n=>n.classList.toggle("active",n.dataset.nav===name));
+ EL("topTitle").textContent=titleText();
+ if(name==="builder"){populateProductForm();renderBuilder()}
+ if(name==="regulations")renderLaws();
+ renderAll();
+ // Navigate without a forced jump; reset only the actual scroll container.
+ const scroller=document.scrollingElement||document.documentElement;
+ if(scroller.scrollTop>0){
+   const target=document.getElementById("page-"+name);
+   const prefersReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+   const top=Math.max(0,window.scrollY+target.getBoundingClientRect().top-20);
+   window.scrollTo({top,behavior:"instant"});
+ }
+ if(innerWidth<760)document.querySelectorAll(".sidebar").forEach(el=>el.style.display="");
+}
+function toast(message){
+ clearTimeout(toastTimeout);
+ EL("toastText").textContent=message;
+ EL("toast").classList.add("show");
+ toastTimeout=setTimeout(()=>EL("toast").classList.remove("show"),3100);
+}
+window.v3Data=()=>({a:analyze(),stats:evidenceStats()});
+function renderAll(){
+ const a=analyze();
+ renderDashboard(a);renderBuilder(a);renderAssessment(a);renderFiles();renderEvidence();renderReports(a);renderService();
+}
+function renderDashboard(a){
+ EL("welcomeText").textContent=`${state.product||"未命名项目"} · 目标市场：${state.destination} · 让每一项决策都有依据。`;
+ EL("metrics").innerHTML=[
+  {title:"包装组件",n:fmt(a.comps.length),unit:"项",foot:"已纳入当前 BOM",icon:"package"},
+  {title:"材料总重量",n:fmt(a.total),unit:"g",foot:"按单套包装计",icon:"grid",kind:"blue"},
+  {title:"设计优化指数",n:a.total?a.score:"—",unit:"/ 100",foot:"内部演示性比较指标",icon:"arrow-up"},
+  {title:"人工复核证据",n:evidenceStats().reviewed,unit:`/ ${evidenceStats().total}`,foot:"复核记录 / 已建档",icon:"shield",kind:"amber"}
+ ].map(m=>`<div class="metric"><div class="metric-top"><span>${m.title}</span><span class="metric-icon ${m.kind||""}">${ic(m.icon)}</span></div><div class="metric-number">${m.n}<small>${m.unit}</small></div><div class="metric-foot">${m.foot}</div></div>`).join("");
+ let groups={};a.comps.forEach(c=>{const type=MAT[c.material]?.group||"复合 / 其他";groups[type]=(groups[type]||0)+Number(c.weight)});
+ const entries=Object.entries(groups).sort((x,y)=>y[1]-x[1]);let progress=0,stops=[];
+ entries.forEach(([k,v])=>{const start=progress;progress+=v/(a.total||1)*100;stops.push(`${GROUP_COLORS[k]||"#d7bd9a"} ${start}% ${progress}%`)});
+ EL("materialsOverview").innerHTML=a.total?
+ `<div class="donut" style="background:conic-gradient(${stops.join(",")})"><div class="donut-center"><strong>${fmt(a.total)}</strong><span>总重 / g</span></div></div>
+ <div class="legend">${entries.map(([k,v])=>`<div class="legend-row"><i class="legend-dot" style="background:${GROUP_COLORS[k]||"#d7bd9a"}"></i><span class="legend-name">${k}</span><span class="legend-value">${fmt(v)} g</span><span style="color:#9cad9f;font-size:10px;width:34px;text-align:right">${Math.round(v/a.total*100)}%</span></div>`).join("")}</div>`:
+ `<div class="empty">暂无材料清单，请先创建包装组件。</div>`;
+ EL("componentsOverview").innerHTML=a.comps.length?
+ `<div class="table-wrap"><table class="data-table" style="min-width:480px"><thead><tr><th>组件名称</th><th>材料类型</th><th>重量</th><th>设计提示</th></tr></thead><tbody>${a.comps.slice(0,5).map(c=>`<tr><td><b>${esc(c.name)}</b><span class="muted">${LAYERS[c.layer]||"其他"}</span></td><td>${esc(MAT[c.material]?.name||"其他")}</td><td>${fmt(c.weight)}g</td><td>${c.material==="eps"||c.material==="composite"?status("优先优化","amber"):status("待验证","gray")}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">暂无组件</div>`;
+ const rows=[
+  ["物质安全核验",state.proof.heavy?"已标记取得检测资料":"重金属检测依据待补",state.proof.heavy?"green":"amber","shield"],
+  ["回收设计方向",a.eps||a.composite?"存在需优先验证的材料":"当前未识别重点材料警示",a.eps||a.composite?"amber":"green","refresh"],
+  ["技术文档 / DoC",state.proof.technical?"已标记技术文件齐备":"技术文件待整理",state.proof.technical?"green":"amber","file"],
+  ["目标国 EPR",state.proof.epr?"已标记完成确认":"注册责任与证明待核实",state.proof.epr?"green":"amber","book"]
+ ];
+ EL("readinessOverview").innerHTML=rows.map(([name,description,s,icon])=>
+ `<div class="rule-row"><div class="rule-icon">${ic(icon)}</div><div class="rule-text"><b>${name}</b><small>${description}</small></div>${status(s==="green"?"已记录":"待核实",s)}</div>`).join("");
+ const tasks=state.tasks.filter(t=>!t.done).slice(0,3);
+ EL("tasksOverview").innerHTML=tasks.length?tasks.map(t=>`<div class="todo-row"><span class="todo-dot"></span><div class="todo-content"><b>${esc(t.title)}</b><p>${esc(t.description)}</p></div></div>`).join(""):`<div class="empty">当前任务已完成，可到服务中心创建新任务。</div>`;
+ const times=[
+  ["2026.08.12","PPWR 正式开始适用","部分规则从此日期起适用；其余条款分阶段实施"],
+  ["2028.02.12","空隙率计算方法计划节点","第 24 条要求欧盟出台相关实施法案"],
+  ["2030 起","回收设计 / 减量要求","具体适用日可能取决于授权或实施法案生效"],
+  ["2035 起","规模化回收评定阶段","需关注后续配套法规和过渡安排"]
+ ];
+ EL("timelineOverview").innerHTML=times.map((r,i)=>`<div class="time-row ${i===0?"active":""}"><div class="time-date">${r[0]}</div><div><div class="time-title">${r[1]}</div><div class="time-desc">${r[2]}</div></div></div>`).join("");
+}
+function populateProductForm(){
+ EL("productName").value=state.product;
+ EL("destination").value=state.destination;
+ EL("packagingType").value=state.packagingType;
+ EL("voidRatio").value=state.voidRatio;
+ EL("foodContact").checked=state.foodContact;
+}
+function renderBuilder(a=analyze()){
+ EL("bomCount").textContent=a.comps.length+" 项";
+ EL("bomTotal").textContent=`合计 ${fmt(a.total)} g · ${a.comps.length} 个组件`;
+ EL("bomBody").innerHTML=a.comps.length?a.comps.map(c=>`<tr>
+  <td><b>${esc(c.name)}</b><span class="muted">${LAYERS[c.layer]||"其他"}</span></td>
+  <td>${esc(MAT[c.material]?.name||"其他")}<span class="muted">${esc(c.process||"无工艺备注")}</span></td>
+  <td><b>${fmt(c.weight)} g</b></td><td>${c.proof?status("已取得","green"):status("待提供","amber")}</td>
+  <td><div class="row-actions"><button class="circle-icon" title="编辑" data-action="edit-component" data-id="${esc(c.id)}">${ic("edit",true)}</button><button class="circle-icon danger" title="删除" data-action="delete-component" data-id="${esc(c.id)}">${ic("trash",true)}</button></div></td></tr>`).join(""):`<tr><td colspan="5"><div class="empty">包装清单为空。请在上方添加第一个组件。</div></td></tr>`;
+ EL("builderScore").innerHTML=`<div class="score-box"><div class="score-caption">DESIGN OPTIMIZATION INDEX / DEMO</div><div class="score-main">${a.total?a.score:"—"} <small>/ 100</small></div>
+  <div class="score-scale"><span style="width:${a.score}%"></span></div><div class="score-meta"><span>方案状态：${a.level}</span><span>基于材料权重的内部模拟值</span></div></div>`;
+ const whatif=a.comps.reduce((sum,c)=>sum+Number(c.weight)*(c.material==="eps"?MAT.pulp.score:MAT[c.material]?.score??45),0)/(a.total||1);
+ const after=Math.round(whatif);const gain=after-a.score;
+ EL("builderAdvice").innerHTML=a.eps?
+ `<div class="soft-note" style="line-height:1.9"><b>预估优化效果</b><div style="display:flex;align-items:baseline;gap:8px;margin:5px 0;color:#258456;font-size:21px;font-weight:850">${a.score} <span style="font-size:13px">→</span> ${after} <span style="font-size:11px">（+${gain} 分）</span></div>这是内部比较，不是法定回收性能分级。</div>`:
+ `<div class="soft-note">${a.total?"当前没有 EPS 组件需要一键替换。可以继续添加组件或恢复示例查看完整演示。":"先添加材料组件，即可进行方案对比。"}</div>`;
+}
+function resetCompForm(){
+ editing=null;EL("componentForm").reset();
+ EL("saveComponentButton").innerHTML=ic("plus")+"添加到包装清单";
+ EL("cancelEdit").style.display="none";
+}
+function startEdit(id){
+ const c=state.components.find(x=>x.id===id);if(!c)return;
+ nav("builder");
+ editing=id;
+ EL("componentName").value=c.name;EL("material").value=c.material;EL("weight").value=c.weight;
+ EL("layer").value=c.layer;EL("process").value=c.process;EL("compProof").value=c.proof?"yes":"no";
+ EL("saveComponentButton").innerHTML=ic("check")+"保存组件修改";
+ EL("cancelEdit").style.display="";
+ EL("componentName").focus();
+}
+function saveComponent(){
+ const item={
+  id:editing||ID("c"),
+  name:EL("componentName").value.trim(),
+  material:EL("material").value,
+  weight:Number(EL("weight").value),
+  layer:EL("layer").value,
+  process:EL("process").value.trim(),
+  proof:EL("compProof").value==="yes"
+ };
+ if(!item.name||!(item.weight>0)||!Number.isFinite(item.weight)){toast("请填写组件名称及大于 0 的重量");return}
+ const wasEditing=!!editing;
+ if(editing){
+  const idx=state.components.findIndex(c=>c.id===editing);if(idx>=0)state.components[idx]=item;
+ }else state.components.push(item);
+ auditEvent(wasEditing?"修改 BOM 组件":"新增 BOM 组件",item.name,item.id);
+ save();resetCompForm();renderAll();toast(wasEditing?"组件已更新":"组件已加入包装清单");
+}
+function optimize(){
+ const eps=state.components.filter(c=>c.material==="eps");
+ if(!eps.length){toast("当前方案没有 EPS 组件；可恢复示例演示优化效果。");return}
+ const old=analyze().score;
+ eps.forEach(c=>{c.name=c.name.replace(/EPS|泡沫|发泡/gi,"纸浆模塑").replace(/纸浆模塑缓冲块/,"纸浆模塑缓冲件");c.material="pulp";c.process="纸浆模塑替代 · 待验证防护性能";c.proof=false});
+ const updated=analyze().score;
+ auditEvent("替代材料方案模拟",`EPS 替换为纸浆模塑，内部指标 ${old} → ${updated}`,"BOM");
+ save();renderAll();toast(`纸基方案已应用：内部优化指数 ${old} → ${updated}（+${updated-old}）`);
+}
+function buildChecks(a){
+ const checks=[
+  {title:"第 5 条 · 四种重金属限制",detail:"铅、镉、汞和六价铬总量通常不得超过 100 mg/kg；需取得适用检测依据。",value:state.proof.heavy?"已手动标记取得资料":"缺少检测依据",type:state.proof.heavy?"green":"amber"},
+  {title:"第 5 条 · 食品接触 PFAS",detail:state.foodContact?"此方案标记为食品接触包装，应核对 25 ppb / 250 ppb / 50 ppm 限值和对应检测依据。":"当前未标记为食品接触包装；需由企业确认实际用途后决定是否适用。",value:!state.foodContact?"用途待确认":state.proof.pfas?"已手动标记取得资料":"待补检测依据",type:!state.foodContact?"blue":state.proof.pfas?"green":"amber"},
+  {title:"第 6 条 · 可回收性",detail:"关注组件可分离性、分拣与回收体系；正式 A/B/C 分级依赖配套法案和技术要求。",value:a.eps||a.composite?"存在优化关注项":"仍需正式技术核验",type:a.eps||a.composite?"amber":"blue"},
+  {title:"第 10 条 · 包装减量",detail:"包装重量和体积应符合功能必需，相关设计减量要求自 2030 年起按规定适用。",value:"需要设计依据",type:"blue"},
+  {title:"第 24 条 · 空隙率",detail:state.packagingType==="sales"?"销售包装应根据第24条第4款的时点与要求减少不必要空隙；不直接套用集合/运输/电商的 50% 指标。":`当前类型：${LAYERS[state.packagingType]||"其他"}。集合、运输及电商包装的 50% 要求从 2030 年或实施法案生效后 3 年（较晚者）开始适用。`,
+   value:state.voidRatio===""?"未录入空隙率":`自报 ${fmt(state.voidRatio)}% · ${state.packagingType==="sales"?"另行判断":Number(state.voidRatio)>50?"预警":"供参考"}`,type:state.packagingType!=="sales"&&state.voidRatio!==""&&Number(state.voidRatio)>50?"amber":"blue"},
+  {title:"第 39 条 · EU DoC 与文件",detail:"制造商在完成适用的符合性评估后，根据附件 VIII 结构出具 EU DoC。",value:state.proof.technical?"已手动标记取得资料":"技术文件待完成",type:state.proof.technical?"green":"amber"},
+  {title:"第 44–45 条 · EPR 责任",detail:`核实${state.destination}销售主体的生产者身份、成员国注册及履责方案。`,value:state.proof.epr?"已手动标记取得资料":"国家义务待核实",type:state.proof.epr?"green":"amber"}
+ ];
+ return checks;
+}
+function renderAssessment(a=analyze()){
+ EL("assessmentSummary").innerHTML=`
+ <div class="gauge" style="background:conic-gradient(#40a776 0 ${a.score}%,#e7efe7 ${a.score}% 100%)"><div class="gauge-core"><b>${a.total?a.score:"—"}</b><span>内部优化指数</span></div></div>
+ <div><div class="eyebrow">AUTOMATED PRE-SCREENING / DEMONSTRATION</div><h2 style="margin-bottom:9px">${esc(state.product)}</h2>
+ <p class="lead" style="line-height:1.9;margin-bottom:13px">目标市场：${esc(state.destination)} · 共 ${a.comps.length} 个组件 · ${fmt(a.total)} 克。当前方案模拟等级为「${a.level}」，仅用于方案间的设计比较，不代表 PPWR 法定可回收等级。</p>
+ <div class="actions">${status(a.eps||a.composite?"材料需进一步核实":"建议继续证据核验",a.eps||a.composite?"amber":"green")}${status(`${a.pendingProof+a.missingMaterials} 项待补资料`,a.pendingProof+a.missingMaterials?"amber":"green")}</div>
+ </div>`;
+ EL("assessmentChecks").innerHTML=buildChecks(a).map(c=>
+ `<div class="check-row ${c.type==="amber"?"warn":c.type==="red"?"high":""}"><div class="status-icon">${ic(c.type==="green"?"check":c.type==="amber"?"alert":"info")}</div><div class="check-copy"><b>${c.title}</b><p>${c.detail}</p>
+ <div class="assess-foot-links"><a class="rule-source-link" target="_blank" rel="noopener noreferrer" href="${EU}">${ic("external",true)} 正式法规</a>
+ ${(c.title.includes("PFAS")||c.title.includes("空隙"))?`<a class="rule-source-link" target="_blank" rel="noopener noreferrer" href="${SOURCE_BY_ID.GUIDE.url}">官方实施指南</a>`:""}
+ ${c.title.includes("重金属")?status(proofContext("heavy").label,proofContext("heavy").kind):c.title.includes("PFAS")&&state.foodContact?status(proofContext("pfas").label,proofContext("pfas").kind):c.title.includes("DoC")?status(proofContext("technical").label,proofContext("technical").kind):c.title.includes("EPR")?status(proofContext("epr").label,proofContext("epr").kind):""}
+ </div></div>${status(c.value,c.type)}</div>`
+ ).join("");
+ renderTrace();
+ EL("componentAnalysis").innerHTML=a.comps.length?a.comps.map(c=>
+ `<tr><td><b>${esc(c.name)}</b><span class="muted">${esc(MAT[c.material]?.name||"其他")}</span></td>
+ <td>${Math.round(Number(c.weight)/a.total*100)}%</td><td><b>${MAT[c.material]?.score??45}</b><span class="muted">示例分</span></td><td style="max-width:185px">${esc(MAT[c.material]?.tip||"补齐材质凭证")}</td></tr>`
+ ).join(""):`<tr><td colspan="4"><div class="empty">请先录入材料数据</div></td></tr>`;
+ const proofItems=[
+  ["heavy","重金属测试依据","第 5 条 · 四种金属"],
+  ["pfas","食品接触 PFAS 检测","第 5 条 · 适用食品接触"],
+  ["technical","技术文件与 DoC 底稿","附件 VII、VIII / 第 39 条"],
+  ["epr","目标国 EPR 义务核实","第 44–45 条"]
+ ];
+ EL("proofChecklist").innerHTML=proofItems.map(([key,title,sub])=>
+ `<label class="proof-tile" style="${key==="pfas"&&!state.foodContact?"opacity:.6":""}"><input type="checkbox" data-proof="${key}" ${state.proof[key]?"checked":""} ${key==="pfas"&&!state.foodContact?"disabled":""}><span><b>${title}</b><small>${sub}</small></span></label>`
+ ).join("");
+ const proposals=[];
+ if(a.eps)proposals.push({title:"优化缓冲组件",desc:"试用纸浆模塑缓冲件替代 EPS，并验证跌落、抗压、防潮等性能。",action:"optimize",text:"试用纸基方案"});
+ if(a.composite)proposals.push({title:"检查复合材可分离性",desc:"尽量减少不可分离复合层，联系回收链伙伴验证分类路径。",action:"go-builder",text:"调整 BOM"});
+ if(a.missingMaterials)proposals.push({title:"追补组件材料声明",desc:`${a.missingMaterials} 个组件尚未标记为取得材料证明；补全材质和供应商依据。`,action:"go-builder",text:"查看组件"});
+ if(a.pendingProof)proposals.push({title:"补齐法规核验证据",desc:"整理检测、EPR 与技术文件，并由责任方核对适用性。",action:"go-media",text:"管理附件"});
+ if(!proposals.length)proposals.push({title:"进入文件审查阶段",desc:"已记录的证据状态较完整，但仍需要真实检测数据与企业最终审查。",action:"go-reports",text:"查看报告"});
+ EL("assessmentRecommendations").innerHTML=proposals.map((r,i)=>`<div class="todo-row"><span class="todo-dot ${i?"":"done"}"></span><div class="todo-content"><b>${r.title}</b><p style="line-height:1.7">${r.desc}</p><button class="link-btn" data-action="${r.action}">${r.text} ${ic("arrow",true)}</button></div></div>`).join("");
+}
+
+function auditEvent(type,message,ref=""){
+ const ts=new Date().toISOString();
+ if(!Array.isArray(state.audit))state.audit=[];
+ state.audit.unshift({id:ID("log"),at:ts,type:String(type).slice(0,30),message:String(message).slice(0,210),ref:String(ref).slice(0,80)});
+ state.audit=state.audit.slice(0,100);
+}
+function evidenceStats(){
+ const docs=Array.isArray(state.evidence)?state.evidence:[];
+ const reviewed=docs.filter(d=>d.review==="reviewed"&&!isExpired(d)).length;
+ const pending=docs.filter(d=>d.review==="pending").length;
+ const expired=docs.filter(d=>isExpired(d)).length;
+ const missingKinds=["heavy",...(state.foodContact?["pfas"]:[]),"technical","epr"].filter(k=>!docs.some(d=>d.kind===k&&d.review==="reviewed"&&!isExpired(d)));
+ return {total:docs.length,reviewed,pending,expired,missingKinds};
+}
+function isExpired(doc){
+ if(!doc.expires)return false;
+ const t=Date.parse(doc.expires+"T23:59:59");
+ return Number.isFinite(t)&&t<Date.now();
+}
+function proofContext(key){
+ const docs=state.evidence.filter(d=>d.kind===key);
+ const reviewed=docs.filter(d=>d.review==="reviewed"&&!isExpired(d)).length;
+ const invalid=docs.filter(isExpired).length;
+ if(!docs.length)return state.proof[key]?{label:"有手动勾选，未建立证据档案",kind:"amber"}:{label:"未录入来源文件",kind:"amber"};
+ if(reviewed)return {label:`${reviewed} 份已人工复核（非官方验真）`,kind:"green"};
+ if(invalid)return {label:`${invalid} 份过期 · 需复核`,kind:"red"};
+ return {label:`${docs.length} 份已登记 · 待人工核验`,kind:"amber"};
+}
+function renderEvidence(){
+ const stats=evidenceStats(), e=EL("evidenceKpis");if(!e)return;
+ e.innerHTML=[
+  ["已登记原始证据",stats.total,"份",""],
+  ["人工复核完成",stats.reviewed,"份",""],
+  ["待核验记录",stats.pending,"份","warn"],
+  ["核心证据类别缺口",stats.missingKinds.length,"类","warn"]
+ ].map(([label,num,unit,t])=>`<div class="evidence-kpi"><span>${label}</span><strong>${num}<small style="font-size:11px;color:#9aa89d;margin-left:5px;font-weight:500">${unit}</small></strong></div>`).join("");
+ EL("evidenceCount").textContent=stats.total+" 份";
+ const compSelect=EL("evComponent"),attachmentSelect=EL("evAttachment");
+ const previousComponent=compSelect.value,previousAttach=attachmentSelect.value;
+ compSelect.innerHTML='<option value="">不限组件 / 全项目</option>'+state.components.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+ attachmentSelect.innerHTML='<option value="">不关联文件 · 仅记录元数据</option>'+state.files.map(f=>`<option value="${esc(f.id)}">${esc(f.name)}</option>`).join("");
+ if([...compSelect.options].some(o=>o.value===previousComponent))compSelect.value=previousComponent;
+ if([...attachmentSelect.options].some(o=>o.value===previousAttach))attachmentSelect.value=previousAttach;
+ const list=EL("evidenceList");
+ list.innerHTML=state.evidence.length?state.evidence.map(d=>{
+  const badgeState=isExpired(d)?{label:"已过期 · 待重检",color:"red"}:REVIEW_STATES[d.review]||REVIEW_STATES.pending;
+  const file=state.files.find(f=>f.id===d.fileId);
+  const comp=state.components.find(c=>c.id===d.componentId);
+  return `<div class="evidence-item">
+   <div class="evidence-symbol">${ic("file")}</div>
+   <div class="evidence-body">
+    <div class="evidence-label"><b>${esc(d.title)}</b>${statusBadge()}</div>
+    <p>${esc(EVIDENCE_KINDS[d.kind]||"其他证明")} · ${esc(d.issuer)} · ${esc(d.number||"无编号")}</p>
+    <div class="doc-meta-line"><span>签发：${esc(d.issued||"未填")}</span><span>到期：${esc(d.expires||"不适用")}</span>${comp?`<span>组件：${esc(comp.name)}</span>`:""}</div>
+    ${d.note?`<p style="line-height:1.7">备注：${esc(d.note)}</p>`:""}
+    <div class="doc-meta-line">${file?`<span>📎 已关联附件：${esc(file.name)}</span>`:`<span>附件：${d.fileId?"关联文件已移除":"尚未关联"}</span>`}<span>最后标记：${esc(d.reviewer||"未复核")}</span></div>
+    <div class="evidence-actions">
+      ${d.review!=="reviewed"?`<button class="btn sm soft" data-action="review-evidence" data-id="${esc(d.id)}">${ic("check",true)} 标记人工复核</button>`:`<button class="btn sm" data-action="pending-evidence" data-id="${esc(d.id)}">退回待复核</button>`}
+      <button class="btn sm" data-action="revise-evidence" data-id="${esc(d.id)}">要求补充</button>
+      <button class="btn sm danger" data-action="remove-evidence" data-id="${esc(d.id)}">${ic("trash",true)} 删除</button>
+    </div>
+   </div>
+  </div>`;
+  function statusBadge(){return status(badgeState.label,badgeState.color)}
+ }).join(""):`<div class="empty">${ic("file")}尚无真实证据记录。右侧可录入检测报告、供应商声明或 EPR 凭证；不会自动生成虚构证书。</div>`;
+ const auditBox=EL("auditList");
+ auditBox.innerHTML=state.audit.length?state.audit.slice(0,7).map(x=>
+  `<div class="audit-row"><b>${esc(x.type)}</b><p>${esc(x.message)}</p><small>${new Date(x.at).toLocaleString("zh-CN")}</small></div>`).join(""):`<div class="empty">暂无操作记录。新增或复核一份文件后开始留痕。</div>`;
+}
+function saveEvidenceRecord(){
+ const ev={
+  id:ID("ev"),title:EL("evName").value.trim(),kind:EL("evKind").value,
+  componentId:EL("evComponent").value,issuer:EL("evIssuer").value.trim(),
+  number:EL("evNumber").value.trim(),issued:EL("evIssue").value,
+  expires:EL("evExpiry").value,fileId:EL("evAttachment").value,
+  note:EL("evNote").value.trim(),review:"pending",reviewer:"",
+  createdAt:new Date().toISOString()
+ };
+ if(!ev.title||!ev.issuer){toast("需要填写证据名称及出具机构");return}
+ if(ev.expires&&ev.issued&&ev.expires<ev.issued){toast("截止日期不能早于签发日期");return}
+ state.evidence.unshift(ev);auditEvent("登记原始证据",`${ev.title} · ${ev.issuer} · ${ev.number||"无编号"}`,ev.id);
+ save();EL("evidenceForm").reset();renderAll();toast("证据已登记：默认状态为「待人工核验」");
+}
+function reviewEvidenceAction(id,review){
+ const d=state.evidence.find(x=>x.id===id);if(!d)return;
+ if(review==="reviewed"&&(!d.fileId||!state.files.some(f=>f.id===d.fileId)||!d.number.trim())){
+   toast("人工复核前请关联已上传原件，并填写凭证编号。");return;
+ }
+ if(review==="reviewed"&&isExpired(d)){toast("凭证已过期，请更新资料后复核。");return}
+ d.review=review;d.reviewer=review==="reviewed"?"本地操作者人工标记":review==="needs_info"?"资料补充待办":"退回待审核";
+ d.reviewedAt=new Date().toISOString();
+ auditEvent("证据状态变更",`${d.title} → ${(REVIEW_STATES[review]||REVIEW_STATES.pending).label}（非官方验真）`,d.id);
+ save();renderAll();
+ toast("状态已更新，并已记录到操作日志");
+}
+function exportAudit(){
+ const report={product:state.product,exportedAt:new Date().toISOString(),knowledgeSnapshot:SNAPSHOT,
+  evidence:state.evidence.map(x=>({...x,attachmentFilename:(state.files.find(f=>f.id===x.fileId)||{}).name||null})),
+  audit:state.audit,officialSources:SOURCES.map(x=>({title:x.title,url:x.url,published:x.published})),
+  note:"所有核验状态由操作者标记，非官方认证或证书验真结果。"};
+ download("绿包智造_证据与审查日志.json",JSON.stringify(report,null,2),"application/json;charset=utf-8");
+ toast("证据台账与审查日志已导出");
+}
+function renderTrace(){
+ const el=EL("assessmentTrace");if(!el)return;
+ const es=evidenceStats(),a=analyze();
+ el.innerHTML=[
+  ["官方来源快照",SOURCES.length,"个 · 可点击查阅原文",""],
+  ["关联原始证据",es.total,"份 · 当前项目证据台账",""],
+  ["人工复核记录",es.reviewed,"份 · 自行标记，非官方验真",""],
+  ["关键类别待补",es.missingKinds.length,"类 · 请上传原始文件","warn"]
+ ].map(([label,num,desc,k])=>`<div class="trace-box ${k}"><div class="trace-label">${label}</div><div class="trace-number">${num}</div><div class="trace-desc">${desc}</div></div>`).join("");
+}
+
+function renderFiles(){
+ EL("fileCount").textContent=state.files.length+" 份";
+ EL("fileGrid").innerHTML=state.files.length?state.files.map(f=>
+ `<div class="file-tile"><div class="file-preview">${f.preview?`<img src="${f.preview}" alt="${esc(f.name)}">`:ic(f.type==="application/pdf"?"file":"camera")}</div>
+ <button class="file-delete" data-action="delete-file" data-id="${esc(f.id)}" title="移除文件">${ic("trash",true)}</button>
+ <div class="file-meta"><b title="${esc(f.name)}">${esc(f.name)}</b><small>${esc(f.cat)} · ${fmt(f.size/1024)} KB${f.preview?"":" · 仅留存文件名"}</small></div></div>`
+ ).join(""):`<div class="empty" style="grid-column:1/-1">${ic("camera")}尚无附件。拖拽文件或点击上方上传即可建立档案。</div>`;
+}
+function reportMarkup(a){
+ const date=now();
+ return `<article class="report-paper">
+  <div class="report-header"><div><div class="report-brand">绿包智造</div><div class="report-topline">GREENPACK · PACKAGING COMPLIANCE</div></div><div style="text-align:right"><span class="pill amber">评估草稿 · 非官方认证</span><div style="font-size:10px;color:#879789;margin-top:7px">${date}</div></div></div>
+  <h2>包装合规初步筛查报告</h2><p style="font-size:11px;color:#809385;margin:-2px 0 12px">Preliminary PPWR Packaging Assessment · Demonstration</p>
+  <table class="report-mini"><tr><td>项目 / 产品</td><td><strong>${esc(state.product)}</strong></td></tr><tr><td>目标成员国</td><td>${esc(state.destination)}</td></tr><tr><td>评估包装类型</td><td>${LAYERS[state.packagingType]||"待定"}</td></tr><tr><td>法规参考</td><td>Regulation (EU) 2025/40</td></tr></table>
+  <div class="report-summary"><div><span>已记录组件</span><strong>${a.comps.length}</strong></div><div><span>总重量</span><strong>${fmt(a.total)} g</strong></div><div><span>内部优化指数</span><strong>${a.total?a.score:"—"}</strong></div></div>
+  <h4>1. 材料清单（BOM）</h4>
+  <table class="doc-table"><thead><tr><th>组件</th><th>材料类别</th><th>重量</th><th>证明材料</th></tr></thead><tbody>${a.comps.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(MAT[c.material]?.name||"其他")}</td><td>${fmt(c.weight)} g</td><td>${c.proof?"已取得（未核验）":"待补"}</td></tr>`).join("")||'<tr><td colspan="4">尚无组件数据</td></tr>'}</tbody></table>
+  <h4 style="margin-top:18px">2. 重点核查与待办</h4>
+  <table class="doc-table"><thead><tr><th>项目</th><th>初步状态</th></tr></thead><tbody>
+  <tr><td>物质限制 · Art.5</td><td>${state.proof.heavy?"已标记取得重金属检测资料":"待补重金属检测依据"}${state.foodContact?"；"+(state.proof.pfas?"PFAS 资料已标记":"PFAS 资料待补"):""}</td></tr>
+  <tr><td>回收设计 · Art.6</td><td>${a.eps||a.composite?"存在需验证的组件设计":"尚需按未来详细规则正式验证"}</td></tr>
+  <tr><td>减量及空隙率 · Art.10 / 24</td><td>${state.voidRatio!==""?"自报空隙率 "+fmt(state.voidRatio)+"%，需适用方法核算":"需补尺寸与空隙率数据"}</td></tr>
+  <tr><td>技术文件 / EU DoC · Art.39</td><td>${state.proof.technical?"已标记准备":"待整理并由责任方审核"}</td></tr>
+  <tr><td>目标国 EPR · Art.44–45</td><td>${state.proof.epr?"已标记完成责任核对":"待核实注册等具体义务"}</td></tr>
+  </tbody></table>
+  <h4 style="margin-top:18px">3. 下一步建议</h4>
+  <p style="font-size:11px;line-height:1.9;color:#52695a">${a.eps?"优先验证 EPS 缓冲替代材料的保护性与回收路径；":""}收集材料声明、适用检测报告、设计减量依据、目标国 EPR 文件，完成适用的符合性评估，再由制造商决定正式声明内容。</p>
+  <h4 style="margin-top:18px">4. 证据台账与来源追溯</h4>
+  <table class="doc-table"><thead><tr><th>凭证</th><th>出具机构</th><th>编号</th><th>复核状态</th></tr></thead>
+  <tbody>${state.evidence.length?state.evidence.map(x=>`<tr><td>${esc(x.title)}</td><td>${esc(x.issuer)}</td><td>${esc(x.number||"未提供")}</td><td>${isExpired(x)?"已过期":(REVIEW_STATES[x.review]?.label||"待人工复核")}（自报）</td></tr>`).join(""):`<tr><td colspan="4">目前未归档原始证据；不能得出已完成认证的结论</td></tr>`}</tbody></table>
+  <p style="font-size:10px;color:#789183;margin:9px 0">知识快照：${SNAPSHOT} · 核心来源：EUR-Lex Regulation (EU) 2025/40；Commission Guidance C/2026/3084；PPWR FAQ (2026-08-03)。</p>
+  <div class="report-disclaimer"><strong>重要声明：</strong> 本文档是演示软件生成的初步辅助筛查结果。内部评分由示例材料权重计算，非 PPWR 法定 A/B/C 等级。本文档不确认产品可上市、不属于合格证书，也不构成法律意见。法规正式文本：${EU}</div>
+ </article>`;
+}
+function docMarkup(){
+ const unknown="待企业填写";
+ return `<div class="report-paper" style="min-height:0"><div style="font-size:10px;color:#799586;letter-spacing:1px;font-weight:800;margin-bottom:12px">EU DECLARATION OF CONFORMITY · DRAFT ONLY</div>
+  <h2 style="font-size:17px">欧盟符合性声明（DoC）</h2><div class="pill amber" style="margin-bottom:13px">未签署 · 非正式声明</div>
+  <table class="report-mini"><tr><td>声明编号</td><td>${unknown}</td></tr><tr><td>制造商法定名称及地址</td><td>${unknown}</td></tr><tr><td>包装识别信息</td><td>${esc(state.product)}</td></tr><tr><td>所引用法规</td><td>Regulation (EU) 2025/40</td></tr><tr><td>技术文件</td><td>${state.proof.technical?"已标记需进一步审查":"尚待整理与审查"}</td></tr><tr><td>签署人 / 职务 / 日期</td><td>${unknown}</td></tr></table>
+  <div class="separator"></div>
+  <p style="font-size:11px;color:#718579;line-height:1.9">按照 PPWR 第 39 条及附件 VIII，正式 EU DoC 应包含所需声明项目，并由制造商在完成适用的符合性评估后承担责任。此处仅预填已知信息，不自动作出符合法规的承诺。</p></div>`;
+}
+function renderReports(a=analyze()){
+ const report=reportMarkup(a),doc=docMarkup();
+ EL("reportPreview").innerHTML=report;
+ EL("docPreview").innerHTML=doc;
+ EL("printDoc").innerHTML=report+'<div style="break-before:page;page-break-before:always"></div>'+doc;
+ const steps=[
+  ["BOM 数据",a.comps.length>0],
+  ["全部组件材料证明",a.missingMaterials===0&&a.comps.length>0],
+  ["物质限制检测依据（人工标记）",state.evidence.some(e=>e.kind==="heavy"&&e.review==="reviewed"&&!isExpired(e))&&(!state.foodContact||state.evidence.some(e=>e.kind==="pfas"&&e.review==="reviewed"&&!isExpired(e)))],
+  ["技术文件准备记录",state.proof.technical],
+  ["EPR 责任核对记录",state.proof.epr],
+  ["制造商审查与签署",false]
+ ];
+ EL("reportSteps").innerHTML=steps.map(([t,yes])=>`<div class="rule-row"><div class="rule-icon" style="${yes?"":"background:#fff4e3;color:#b58545"}">${ic(yes?"check":"clock")}</div><div class="rule-text"><b>${t}</b><small>${yes?"已标记完成 / 尚待业务核验":"尚未完成"}</small></div>${status(yes?"已记录":"待处理",yes?"green":"amber")}</div>`).join("");
+}
+
+const LAWS=[
+ {id:"Art5",art:"第 5 条",name:"重金属与食品接触 PFAS",state:"current",badge:"2026 已适用",apply:"2026-08-12",text:"第 5(4) 条：铅、镉、汞、六价铬总量通常不得超过 100 mg/kg；第 5(5) 条：食品接触包装的 PFAS 限值分别涉及 25 ppb、250 ppb 和 50 ppm。应注意检测定义、例外及其他法规。",keywords:"重金属 pfas 食品 接触 铅 镉 汞 六价铬 测试 检测 化学",sources:["PPWR","GUIDE","FAQ"]},
+ {id:"Art6",art:"第 6 条",name:"包装可回收性设计",state:"future",badge:"分阶段实施",apply:"2030 起，视配套法案时点",text:"建立可回收性与回收设计框架。具体回收性能等级及适用时点须结合后续授权法案，不能以材料种类直接得出法定等级。",keywords:"可回收 回收 EPS 泡沫 塑料 复合 可分离 材料 等级 A B C",sources:["PPWR","EC"]},
+ {id:"Art10",art:"第 10 条",name:"包装减量与最小化",state:"future",badge:"2030 起",apply:"2030-01-01",text:"包装重量与体积应降至确保其功能所必需的最低水平，设计需要考虑保护性等因素并记录技术依据。",keywords:"减量 最小化 设计 重量 体积 优化",sources:["PPWR","GUIDE"]},
+ {id:"Art24",art:"第 24 条",name:"空隙率与过度包装",state:"future",badge:"实施法案待完善",apply:"2030-01-01 或方法法案生效后三年（较晚者）",text:"集合、运输及电商包装的 50% 空隙率限制，适用时间需取 2030 年或相关实施法案生效后三年中较晚者；销售包装另有过度空隙要求。",keywords:"空隙率 50 空间 电商 运输 纸箱 销售包装 包装减量",sources:["PPWR","GUIDE"]},
+ {id:"Art39",art:"第 38–39 条",name:"符合性评估及 EU DoC",state:"doc",badge:"主体责任",apply:"按适用条文及过渡安排",text:"制造商按适用要求完成附件 VII 的技术文件及符合性评估，并根据附件 VIII 出具 EU DoC。软件生成的文稿不能代替正式责任声明和签署。",keywords:"DoC 声明 认证 技术 文件 签署 证明 制造商",sources:["PPWR","GUIDE"]},
+ {id:"Art44",art:"第 44–45 条",name:"生产者登记与 EPR 责任",state:"doc",badge:"国家规则",apply:"按条款与成员国实施情况",text:"生产者登记和扩展生产者责任需要结合目标成员国、销售链路与经济主体身份判断。德国 LUCID 可用于公开登记信息查询，但不等于全部履责证明。",keywords:"EPR 德国 法国 注册 生产者 授权代表 包装法 LUCID",sources:["PPWR","EC","LUCID"]},
+ {id:"FAQ",art:"官方 FAQ",name:"欧盟委员会常见问题（2026）",state:"current",badge:"2026-08-03 发布",apply:"解释文件，不设独立义务",text:"欧盟委员会于 2026 年 8 月 3 日发布的官方问答，有助于理解食品接触 PFAS 等具体适用问题，但不能替代法规正式文本。",keywords:"常见问题 解释 faq 指南 官方 适用",sources:["FAQ","GUIDE"]},
+ {id:"ECHA",art:"ECHA CHEM",name:"化学物质监管资料",state:"current",badge:"动态数据源入口",apply:"以具体化学法规为准",text:"可检索相关化学品与监管信息，不包含客户包装的实际成分、实验室原始测试值，也不能直接签发认证报告。",keywords:"PFAS 化学 物质 REACH 毒性 限值 ECHA",sources:["ECHA"]}
+];
+function renderSources(){
+ const el=EL("sourceGallery");if(!el)return;
+ el.innerHTML=SOURCES.map(s=>`<div class="source-record">
+ <header><span class="source-tag">${esc(s.type)}</span>${status(s.id==="PPWR"?"正式法规":"官方数据来源",s.id==="PPWR"?"green":"blue")}</header>
+ <h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p>
+ <div class="source-meta"><span>发布：${esc(s.published)}</span><span>适用：${esc(s.applied)}</span><span>核对快照：${SNAPSHOT}</span></div>
+ <a href="${s.url}" target="_blank" rel="noopener noreferrer">查看原始来源 ${ic("external",true)}</a>
+ </div>`).join("");
+}
+function lawSourceLinks(ids){
+ return (ids||[]).filter(id=>SOURCE_BY_ID[id]).map(id=>{
+  const x=SOURCE_BY_ID[id];
+  return `<a class="source-chip" href="${x.url}" target="_blank" rel="noopener noreferrer">${ic("external",true)}${esc(x.short)}</a>`
+ }).join("");
+}
+function renderLaws(){
+ const q=(EL("lawSearch")?.value||"").toLowerCase().trim();
+ document.querySelectorAll("[data-filter]").forEach(el=>el.classList.toggle("active",el.dataset.filter===lawFilter));
+ const filtered=LAWS.filter(x=>(lawFilter==="all"||x.state===lawFilter)&&(!q||(x.art+" "+x.name+" "+x.keywords+" "+x.text).toLowerCase().includes(q)));
+ EL("lawCount").textContent=`检索到 ${filtered.length} 项规则摘要 · 官方来源 6 处 · 快照核对 ${SNAPSHOT}`;
+ EL("lawGrid").innerHTML=filtered.map(l=>`
+ <div class="law-card"><div class="law-top"><span class="law-article">${esc(l.art)}</span>${status(l.badge,l.state==="current"?"green":l.state==="doc"?"blue":"amber")}</div>
+ <h3>${esc(l.name)}</h3><p>${esc(l.text)}</p>
+ <div class="doc-meta-line"><span>适用：${esc(l.apply)}</span><span>摘要版本：${SNAPSHOT}</span></div>
+ <div class="answer-sources">${lawSourceLinks(l.sources)}</div>
+ </div>`).join("")||`<div class="empty" style="grid-column:1/-1">没有匹配结果。尝试“PFAS”“EPR”“空隙率”“EU DoC”，或打开官方原文。</div>`;
+ renderSources();
+}
+function matchesForQuestion(q){
+ const text=q.toLowerCase();
+ let ids=[];
+ if(/eps|泡沫|发泡|可回收|复合|分拣|recycl/.test(text))ids.push("Art6");
+ if(/pfas|食品|氟|重金属|化学|铅|镉|汞/.test(text))ids.push("Art5","FAQ");
+ if(/空隙|50%|体积|减量|运输|过度包装/.test(text))ids.push("Art10","Art24");
+ if(/doc|声明|报告|签署|文件|认证|证书/.test(text))ids.push("Art39");
+ if(/epr|注册|授权|代表|德国|法国|lucid/.test(text))ids.push("Art44");
+ if(!ids.length)ids=["Art5","Art6","Art24"];
+ return [...new Set(ids)].map(id=>LAWS.find(x=>x.id===id)).filter(Boolean).slice(0,4);
+}
+function localAnswer(){
+ const q=EL("askInput").value.trim();
+ if(!q){toast("请先输入法规问题");return false}
+ const found=matchesForQuestion(q);
+ const desc=found.map(x=>`<div class="rule-row"><div class="rule-icon">${ic("book")}</div><div class="rule-text"><b>${esc(x.art)} · ${esc(x.name)}</b><small>${esc(x.text)}</small><div class="answer-sources" style="margin-top:9px">${lawSourceLinks(x.sources)}</div></div></div>`).join("");
+ EL("askResult").innerHTML=`<div class="ai-review"><div class="ai-result-label">SOURCE-BASED RETRIEVAL · 本地规则检索，非模型回答</div>
+ <h3 style="margin-top:6px">为你的问题匹配了 ${found.length} 项相关条款</h3>
+ <div class="evidence-sup">当前项目：${esc(state.product)} / ${esc(state.destination)}。本地内容仅包含已内置的法规摘要，不能代替适用性审查。</div>
+ ${desc}<p class="evidence-sup" style="margin-top:12px">来源核对快照：${SNAPSHOT}。上方链接指向官方原文，AI 联网模型服务另行接入。</p></div>`;
+ return true;
+}
+function setAiStatus(mode){
+ aiBackendMode=mode;aiBackendAvailable=(mode==="ready");
+ const label=EL("aiModeLabel"),banner=EL("dashboardAiMode");
+ const s=mode==="ready"?"AI 已连接 · 后端代理就绪":mode==="unconfigured"?"已发现后端 · 尚未配置模型密钥":"未接入在线 AI · 本地规则可用";
+ if(label)label.textContent=s;
+ if(banner)banner.textContent=mode==="ready"?"已连接":"未连接";
+ if(EL("liveAiButton"))EL("liveAiButton").title=mode==="ready"?"向安全后端提交问题进行模型分析":"需要启动随包提供的 AI 后端并设置服务端密钥";
+}
+async function checkAiConnection(){
+ if(!/^https?:$/.test(location.protocol)){setAiStatus("offline");return}
+ try{
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),2500);
+  let response;
+  try{response=await fetch("/api/health",{signal:controller.signal,headers:{"Accept":"application/json"}})}
+  finally{clearTimeout(timer)}
+  if(!response.ok||!(response.headers.get("content-type")||"").includes("application/json")){setAiStatus("offline");return}
+  const data=await response.json();
+  setAiStatus(data.ready?"ready":"unconfigured");
+ }catch(e){setAiStatus("offline")}
+}
+async function aiAnswer(){
+ const q=EL("askInput").value.trim();
+ if(!q){toast("先输入你希望 AI 分析的问题");return}
+ localAnswer();
+ const area=EL("liveAiResult");
+ if(!aiBackendAvailable){
+   area.innerHTML=`<div class="ai-review"><div class="ai-result-label">AI SERVICE / NOT CONNECTED</div>
+   <h3>在线模型尚未接入</h3><p>目前展示的是真实可操作的<strong>本地法规检索</strong>，不是 AI 生成回答。若要启用 AI 深度解读，请运行配套的 Node 服务并将模型密钥配置在服务端环境变量中。</p></div>`;
+   return;
+ }
+ if(aiRequestPending)return;
+ aiRequestPending=true;
+ const btn=EL("liveAiButton");
+ btn.disabled=true;
+ area.innerHTML='<div class="ai-review"><div class="ai-result-label">AI ANALYSIS · 正在分析内置法规快照</div><p>正在组织项目基本数据与官方资料索引，等待模型给出辅助解释…</p></div>';
+ try{
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),25000);
+  const context={product:state.product,destination:state.destination,packagingType:state.packagingType,
+   foodContact:state.foodContact,voidRatio:state.voidRatio,materials:state.components.map(c=>({name:c.name,material:c.material,weight:c.weight})),
+   evidence:state.evidence.map(e=>({kind:e.kind,review:e.review,expired:isExpired(e)})).slice(0,25)};
+  let resp;
+  try{resp=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,project:context}),signal:controller.signal})}
+  finally{clearTimeout(timer)}
+  const data=await resp.json().catch(()=>({error:"响应格式不正确"}));
+  if(!resp.ok)throw new Error(data.error||"模型服务暂时不可用");
+  const refs=matchesForQuestion(q).flatMap(x=>x.sources);
+  area.innerHTML=`<div class="ai-review"><div class="ai-result-label">MODEL ANALYSIS · 真实在线模型 / ${esc(data.model||"已配置模型")}</div>
+   <h3>AI 辅助解释（知识快照：${SNAPSHOT}）</h3>
+   <pre>${esc(data.answer||"模型没有返回可读结果")}</pre>
+   <div class="answer-sources">${lawSourceLinks([...new Set(["PPWR",...refs])].slice(0,4))}</div>
+   <p class="evidence-sup" style="margin-top:11px">上述模型回答不是法律意见，也没有独立核实供应商凭证；来源链接需人工交叉验证。</p></div>`;
+  auditEvent("在线 AI 辅助分析",`问题：${q.slice(0,120)}，模型：${data.model||"未提供"}`,"AI");save();
+ }catch(e){
+  area.innerHTML=`<div class="ai-review"><div class="ai-result-label">AI 连接失败</div><p class="ai-error">${esc(String(e.message||e))}</p>
+   <p class="evidence-sup">仍可继续使用上方本地法规检索。检查后端是否运行、密钥或网络是否有效。</p></div>`;
+ }finally{aiRequestPending=false;btn.disabled=false}
+}
+function answerQuestion(){return localAnswer()}
+
+function renderService(){
+ const tasks=state.tasks;const pending=tasks.filter(t=>!t.done).length;
+ EL("taskCount").textContent=`${pending} 待处理 / ${tasks.length} 总数`;
+ EL("serviceTasks").innerHTML=tasks.length?tasks.map(t=>`<div class="ticket ${t.done?"done":""}"><input class="ticket-check" type="checkbox" data-task="${esc(t.id)}" ${t.done?"checked":""} aria-label="标记任务完成">
+ <div class="ticket-body"><b>${esc(t.title)}</b><p>${esc(t.description||"用户新建任务")}</p></div>
+ ${status(t.done?"已完成":"待处理",t.done?"green":"amber")}
+ <button class="circle-icon danger" data-action="delete-task" data-id="${esc(t.id)}" title="删除任务">${ic("trash",true)}</button></div>`).join(""):`<div class="empty">任务列表为空。点击“创建整改事项”添加任务。</div>`;
+}
+function showModal(opts){
+ const modal=EL("modalBackdrop");
+ EL("modalStep").textContent=opts.step||"GREENPACK WORKSPACE";
+ EL("modalTitle").textContent=opts.title||"提示";
+ if(opts.bodyHtml)EL("modalBody").innerHTML=opts.bodyHtml;
+ else EL("modalBody").textContent=opts.body||"";
+ const acts=EL("modalActions");acts.innerHTML="";
+ const cancel=document.createElement("button");cancel.className="btn";cancel.textContent=opts.cancelLabel||"取消";cancel.onclick=closeModal;acts.append(cancel);
+ if(opts.confirm){
+  const yes=document.createElement("button");yes.className="btn primary";yes.textContent=opts.confirmLabel||"确定";
+  yes.onclick=()=>{const res=opts.confirm();if(res!==false)closeModal()};acts.append(yes);
+ }
+ modal.classList.add("show");
+ setTimeout(()=>{const first=EL("modalBody").querySelector("input");if(first)first.focus()},80);
+}
+function closeModal(){EL("modalBackdrop").classList.remove("show")}
+const TOUR=[
+ ["一屏掌握包装风险","驾驶舱把材料重量、证据缺口和优先整改事项汇聚到一起，适合演示的开场。","dashboard"],
+ ["真正可编辑的包装 BOM","输入材料、重量、包装层级，再点击“应用纸基优化建议”，即可展示设计评分和方案对比。","builder"],
+ ["明确区分模拟分和合规结论","逐条展示第 5、6、10、24、39、44 条的辅助筛查，并勾选企业已经取得的证据。","assessment"],
+ ["输出有证据出处的报告","文档草稿现在可以带出证据来源与人工复核状态。AI 服务需要启动配套后端才能启用。","reports"]
+];
+function tour(){
+ if(tourStep>=TOUR.length){tourStep=0;closeModal();return}
+ const [title,body,destination]=TOUR[tourStep];
+ nav(destination);
+ showModal({step:`DEMO WALKTHROUGH · ${tourStep+1} / ${TOUR.length}`,title,body,cancelLabel:"结束导览",
+  confirmLabel:tourStep===TOUR.length-1?"完成导览":"下一站",
+  confirm:()=>{tourStep++;if(tourStep<TOUR.length){tour();return false}tourStep=0;toast("导览完成，你可以自由操作全部模块。")}
+ });
+}
+function download(name,content,mime){
+ const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+function csv(){
+ const rows=[["组件名称","材料","重量(g)","包装层级","工艺备注","材料证明状态"],...state.components.map(c=>[c.name,MAT[c.material]?.name||c.material,c.weight,LAYERS[c.layer]||c.layer,c.process,c.proof?"已取得":"待补"])];
+ const safe=v=>{let s=String(v??"");if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
+ download("绿包智造_包装BOM.csv","\ufeff"+rows.map(r=>r.map(safe).join(",")).join("\r\n"),"text/csv;charset=utf-8");
+ toast("BOM 已导出为 CSV");
+}
+function exportState(){
+ const data=clone(state);data.files=data.files.map(f=>({...f,preview:null}));
+ download("绿包智造_演示数据.json",JSON.stringify({app:"GreenPack",version:3,exportedAt:new Date().toISOString(),data},null,2),"application/json;charset=utf-8");
+ toast("演示数据已导出 JSON");
+}
+function exportHtmlReport(){
+ const report=reportMarkup(analyze()),doc=docMarkup();
+ const css=`body{font-family:"Microsoft YaHei",Arial,sans-serif;color:#22392c;margin:28px auto;max-width:810px;line-height:1.6;background:#f6f8f5}
+ .report-paper{background:#fff;padding:32px;margin-bottom:22px;border:1px solid #dde6dd}
+ .report-header{display:flex;justify-content:space-between;border-bottom:2px solid #245b43;margin-bottom:20px;padding-bottom:15px}
+ .report-brand{font-weight:900;color:#1b6948;font-size:23px}.report-topline{font-size:10px;color:#788b80;letter-spacing:1px}
+ h2{font-size:21px}h4{font-size:13px}.pill{font-size:10px;color:#a36b26;background:#fbf2df;border-radius:15px;padding:4px 9px}
+ .report-mini,.doc-table{width:100%;border-collapse:collapse;font-size:12px}.report-mini td{border-bottom:1px solid #e5ece5;padding:10px}
+ .report-mini td:first-child{width:36%;color:#7a8f7e}.doc-table td,.doc-table th{border:1px solid #e1e9e1;padding:9px;text-align:left}.doc-table th{background:#f4f8f4}
+ .report-summary{display:flex;gap:10px;margin:20px 0}.report-summary>div{flex:1;padding:12px;background:#eff6ee;border-radius:10px}.report-summary span{display:block;font-size:11px;color:#7a917b}.report-summary strong{font-size:21px}
+ .report-disclaimer{border-left:3px solid #a9c3b1;padding-left:12px;font-size:10px;color:#728479}.separator{border-top:1px solid #e6ede6;margin:17px 0}
+ .tag{color:#167755;font-size:10px}.lead{font-size:12px}.report-paper p{line-height:1.8}@media print{@page{size:A4;margin:15mm}body{margin:0;background:white}.report-paper{border:none;padding:0;page-break-after:always}}`;
+ const docHtml=`<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>包装初筛报告 · ${esc(state.product)}</title><style>${css}</style></head><body>${report}<div style="page-break-before:always"></div>${doc}<p style="font-size:10px;text-align:center;color:#8aa091">绿包智造 · 本地演示导出 · 法规条文以官方发布文本为准</p></body></html>`;
+ const lang=document.getElementById("v3-report-language")?.value||"zh";
+ const finalHtml=lang==="en"&&window.v3TranslateHtml?window.v3TranslateHtml(docHtml):docHtml;
+ download(lang==="en"?"GreenPack_PPWR_Preliminary_Report_EN.html":"绿包智造_PPWR_初筛报告.html",finalHtml,"text/html;charset=utf-8");
+ toast("报告已下载，可独立打开、分享和打印");
+}
+async function handleFiles(files){
+ const chosen=Array.from(files||[]).slice(0,12);
+ if(!chosen.length)return;
+ let added=0;
+ for(const file of chosen){
+  const allowed=file.type.startsWith("image/")||file.type==="application/pdf"||/\.pdf$/i.test(file.name);
+  if(!allowed){toast("只支持图片与 PDF 文件");continue}
+  let preview=null;
+  if(file.type.startsWith("image/")&&file.size<=1.2*1024*1024){
+   preview=await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>resolve(null);reader.readAsDataURL(file)});
+  }
+  const fileId=ID("f");
+  state.files.unshift({id:fileId,name:file.name.slice(0,120),size:file.size,type:file.type||"application/octet-stream",cat:EL("uploadType").value,preview,at:new Date().toISOString()});
+  auditEvent("附件归档",`${file.name} · ${file.size} bytes`,fileId);
+  added++;
+ }
+ if(state.files.length>25)state.files=state.files.slice(0,25);
+ save();renderAll();if(added)toast(`已归档 ${added} 份文件${state.files.some(f=>!f.preview)?"（大型文件可能只保留名称）":""}`);
+ EL("fileInput").value="";
+}
+function performAction(name,el){
+ switch(name){
+ case "tour":tourStep=0;tour();break;
+ case "restore":showModal({title:"恢复默认演示数据？",body:"这会覆盖当前包装 BOM、文件列表、整改事项和证据勾选。建议重要数据先导出 JSON 备份。",confirmLabel:"确认恢复",confirm:()=>{state=clone(INITIAL);save();resetCompForm();populateProductForm();renderAll();nav("dashboard");toast("已恢复默认演示内容")}});break;
+ case "export-state":exportState();break;
+ case "export-audit":exportAudit();break;
+ case "ai-answer":aiAnswer();break;
+ case "review-evidence":reviewEvidenceAction(el.dataset.id,"reviewed");break;
+ case "pending-evidence":reviewEvidenceAction(el.dataset.id,"pending");break;
+ case "revise-evidence":reviewEvidenceAction(el.dataset.id,"needs_info");break;
+ case "remove-evidence":{
+  const item=state.evidence.find(x=>x.id===el.dataset.id);
+  if(item){auditEvent("删除证据",item.title,item.id);state.evidence=state.evidence.filter(x=>x.id!==item.id);save();renderAll();toast("证据已移除，删除动作保留在日志中")}
+  break;
+ }
+ case "export-csv":csv();break;
+ case "export-html":exportHtmlReport();break;
+ case "print-report":EL("printDoc").innerHTML=reportMarkup(analyze())+'<div style="break-before:page;page-break-before:always"></div>'+docMarkup();window.print();break;
+ case "open-official":window.open(EU,"_blank","noopener,noreferrer");break;
+ case "optimize":optimize();break;
+ case "run-assessment":auditEvent("执行法规辅助筛查",`${state.product} · ${state.destination} · ${state.components.length} 组件`,"PPWR");save();renderAll();toast("法规筛查完成，记录已写入审查日志；不等于正式合规认证。");break;
+ case "edit-component":startEdit(el.dataset.id);break;
+ case "delete-component":auditEvent("删除 BOM 组件",state.components.find(x=>x.id===el.dataset.id)?.name||"组件",el.dataset.id);state.components=state.components.filter(x=>x.id!==el.dataset.id);if(editing===el.dataset.id)resetCompForm();save();renderAll();toast("已移除包装组件");break;
+ case "choose-file":EL("fileInput").click();break;
+ case "open-camera":EL("cameraInput").click();break;
+ case "delete-file":auditEvent("删除附件",state.files.find(f=>f.id===el.dataset.id)?.name||"附件",el.dataset.id);state.files=state.files.filter(f=>f.id!==el.dataset.id);save();renderAll();toast("文件已从本地台账移除");break;
+ case "delete-task":state.tasks=state.tasks.filter(t=>t.id!==el.dataset.id);save();renderAll();toast("已删除整改事项");break;
+ case "go-builder":nav("builder");break;
+ case "go-media":nav("media");break;
+ case "go-reports":nav("reports");break;
+ case "answer":answerQuestion();break;
+ case "ask-example":EL("askInput").value="泡沫缓冲材料是不是现在就违法？";answerQuestion();break;
+ case "new-task":
+ showModal({title:"创建整改事项",step:"ACTION ITEM / NEW",bodyHtml:`<div class="field"><label for="newTaskTitle">事项名称</label><input id="newTaskTitle" maxlength="100" placeholder="如：确认供应商检测报告"></div><div class="field" style="margin-top:13px"><label for="newTaskDesc">事项说明</label><textarea id="newTaskDesc" maxlength="300" rows="2" placeholder="可填写责任人、时间或后续行动"></textarea></div>`,
+  confirmLabel:"创建任务",confirm:()=>{const title=EL("newTaskTitle").value.trim();if(!title){toast("请输入事项名称");return false}
+  state.tasks.unshift({id:ID("t"),title,description:EL("newTaskDesc").value.trim(),done:false});save();renderAll();toast("整改事项已创建")}});break;
+ case "commercial":
+ showModal({step:"IMPLEMENTATION / BUSINESS",title:"企业版实施说明",body:"当前为可独立运行的前端演示原型。正式商业交付通常还需要企业账号与权限、法规版本维护、服务器数据存储、合同/支付、签署审查与部署运维。页面所示 ¥1,999/年仅用于原有商业方案演示，不构成可支付订单。",cancelLabel:"我知道了"});break;
+ }
+}
+function init(){
+ EL("material").innerHTML=Object.entries(MAT).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join("");
+ populateProductForm();renderAll();renderLaws();setAiStatus("offline");checkAiConnection();
+ document.querySelectorAll("[data-nav]").forEach(el=>el.addEventListener("click",()=>nav(el.dataset.nav)));
+ document.addEventListener("click",e=>{
+  const act=e.target.closest("[data-action]");
+  if(act){e.preventDefault();performAction(act.dataset.action,act)}
+ });
+ document.querySelectorAll("[data-filter]").forEach(el=>el.addEventListener("click",()=>{
+  lawFilter=el.dataset.filter;renderLaws()
+ }));
+ EL("lawSearch").addEventListener("input",renderLaws);
+ EL("componentForm").addEventListener("submit",e=>{e.preventDefault();saveComponent()});
+ EL("evidenceForm").addEventListener("submit",e=>{e.preventDefault();saveEvidenceRecord()});
+ EL("cancelEdit").addEventListener("click",resetCompForm);
+ ["productName","destination","packagingType","voidRatio","foodContact"].forEach(id=>{
+  const el=EL(id);
+  const update=()=>{
+   state[id==="productName"?"product":id]=id==="foodContact"?el.checked:el.value;
+   save();renderAll();
+  };
+  el.addEventListener(id==="productName"||id==="voidRatio"?"input":"change",update);
+ });
+ document.addEventListener("change",e=>{
+  const proof=e.target.closest("[data-proof]");if(proof){state.proof[proof.dataset.proof]=proof.checked;auditEvent("自报资料状态",`${proof.dataset.proof}: ${proof.checked?"已取得（自报，未验真）":"未取得"}`);save();renderAll()}
+  const task=e.target.closest("[data-task]");if(task){const t=state.tasks.find(x=>x.id===task.dataset.task);if(t){t.done=task.checked;save();renderAll()}}
+ });
+ EL("fileInput").addEventListener("change",e=>handleFiles(e.target.files));
+ EL("cameraInput").addEventListener("change",e=>{handleFiles(e.target.files);e.target.value=""});
+ const zone=EL("uploadZone");
+ zone.addEventListener("click",e=>{if(!e.target.closest("[data-action]"))EL("fileInput").click()});
+ zone.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();EL("fileInput").click()}});
+ zone.addEventListener("dragover",e=>{e.preventDefault();zone.classList.add("drag")});
+ zone.addEventListener("dragleave",e=>{e.preventDefault();zone.classList.remove("drag")});
+ zone.addEventListener("drop",e=>{e.preventDefault();zone.classList.remove("drag");handleFiles(e.dataTransfer.files)});
+ EL("modalClose").addEventListener("click",closeModal);
+ EL("modalBackdrop").addEventListener("click",e=>{if(e.target===EL("modalBackdrop"))closeModal()});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();if(e.key==="/"&&current==="regulations"&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();EL("lawSearch").focus()}});
+}
+init();
+})();
+</script>
+
+<script>
+/* V3 bilingual display + independent report translation; does not modify stored business data. */
+(function(){
+'use strict';
+const dict={"绿包智造": "GreenPack Studio", "合规驾驶舱": "Compliance Dashboard", "包装组件建模": "Packaging Builder", "智能合规评估": "Smart Compliance Assessment", "证据与认证资料": "Evidence & Certifications", "报告与 DoC": "Reports & DoC", "法规与 AI 智库": "Regulations & AI Hub", "服务与工单": "Services & Tickets", "工作空间 / WORKSPACE": "WORKSPACE", "成果与服务 / MANAGEMENT": "MANAGEMENT", "可信数据快照 · 2026.11": "Trusted Data Snapshot · 2026.11", "导出演示数据": "Export Demo Data", "演示导览": "Guided Tour", "系统就绪": "System Ready", "重置示例": "Reset Demo", "用一张工作台，看清包装的材料、证据和法规风险。": "One workspace for packaging materials, evidence and regulatory risks.", "让每一项合规判断": "Make every compliance decision", "都有可信依据。": "backed by trusted evidence.", "法规原文、供应商证据、审核记录与 AI 辅助研判，汇聚为一套可追溯的包装合规工作流程。": "Regulatory texts, supplier evidence, audit records and AI-assisted analysis in one traceable compliance workflow.", "进入 AI 合规智库": "Open AI Compliance Hub", "编辑包装方案": "Edit Packaging Plan", "独立演示版": "Standalone Demo", "PPWR 已自 2026.08.12 开始适用": "PPWR applies from Aug 12, 2026", "包装方案": "Packaging Plan", "包装组件": "Packaging Components", "材料": "Material", "重量": "Weight", "操作": "Actions", "状态": "Status", "名称": "Name", "说明": "Description", "类型": "Type", "日期": "Date", "来源": "Source", "查看详情": "View Details", "查看全部": "View All", "查看法规原文": "View Regulation", "打开官方来源": "Open Official Source", "新增组件": "Add Component", "添加组件": "Add Component", "保存组件": "Save Component", "取消编辑": "Cancel Editing", "删除": "Delete", "编辑": "Edit", "取消": "Cancel", "确认": "Confirm", "关闭": "Close", "保存": "Save", "返回": "Back", "下一步": "Next", "上一步": "Previous", "搜索": "Search", "筛选": "Filter", "全部": "All", "下载": "Download", "上传": "Upload", "导出": "Export", "打印": "Print", "生成报告": "Generate Report", "重新评估": "Reassess", "开始评估": "Start Assessment", "查看报告": "View Report", "风险": "Risk", "高风险": "High Risk", "中风险": "Medium Risk", "低风险": "Low Risk", "已完成": "Completed", "待处理": "Pending", "待人工核验": "Pending Manual Verification", "已人工复核": "Manually Reviewed", "资料待补充": "Additional Documents Required", "不予采用": "Rejected", "证据不足": "Insufficient Evidence", "已取得": "Received", "未取得": "Not Received", "合规": "Compliant", "不合规": "Non-compliant", "待核实": "To Be Verified", "材料分布": "Material Breakdown", "包装材料": "Packaging Materials", "法规要求": "Regulatory Requirements", "整改任务": "Corrective Tasks", "近期任务": "Upcoming Tasks", "任务管理": "Task Management", "添加任务": "Add Task", "新建任务": "New Task", "产品名称": "Product Name", "目标市场": "Target Market", "包装类型": "Packaging Type", "空隙率": "Void Ratio", "食品接触": "Food Contact", "运输包装": "Transport Packaging", "内包装": "Inner Packaging", "销售包装": "Sales Packaging", "集合包装": "Grouped Packaging", "电商包装": "E-commerce Packaging", "纸基材料": "Paper-based Materials", "塑料": "Plastics", "金属": "Metals", "复合 / 其他": "Composite / Other", "瓦楞纸 / 纸板": "Corrugated Paper / Board", "纸浆模塑": "Molded Pulp", "单一 PE 薄膜": "Mono-material PE Film", "单一 PP 塑料": "Mono-material PP Plastic", "EPS 发泡塑料": "EPS Foam", "不可分离复合材": "Non-separable Composite", "铝材": "Aluminum", "其他 / 待识别": "Other / Unidentified", "德国": "Germany", "陶瓷餐具出口套装": "Ceramic Tableware Export Set", "瓦楞纸外箱": "Corrugated Outer Carton", "纸浆模塑内托": "Molded Pulp Insert", "PE 防尘保护袋": "PE Dust-proof Bag", "EPS 缓冲块": "EPS Cushioning Blocks", "重金属检测": "Heavy Metals Test", "PFAS 检测": "PFAS Test", "供应商材料声明": "Supplier Material Declaration", "技术文件 / DoC 底稿": "Technical File / DoC Draft", "EPR 记录": "EPR Records", "其他证明": "Other Supporting Documents", "法规正文": "Regulation Text", "官方实施指南": "Official Implementation Guidance", "官方 FAQ": "Official FAQ", "实施跟踪": "Implementation Tracker", "化学信息": "Chemical Information", "国家登记": "National Registration", "官方指导": "Official Guidance", "官方问答": "Official Q&A", "实施动态": "Implementation Updates", "登记查询": "Registration Lookup", "持续更新": "Continuously Updated", "动态信息库": "Live Database", "动态登记": "Live Register", "解释性文件，不替代法规": "Interpretive guidance; not a substitute for law", "辅助解读，不替代法规": "Supplementary interpretation; not a substitute for law", "法规与政策": "Regulations & Policy", "法规检索": "Regulation Search", "法规条款": "Regulatory Articles", "AI 合规问答": "AI Compliance Q&A", "输入您的问题": "Enter your question", "发送": "Send", "提问": "Ask", "智能分析": "Smart Analysis", "分析结果": "Analysis Results", "证据管理": "Evidence Management", "证据记录": "Evidence Records", "审核记录": "Audit Trail", "审计日志": "Audit Log", "上传证据": "Upload Evidence", "添加证据": "Add Evidence", "文件上传": "File Upload", "选择文件": "Choose Files", "点击上传": "Click to Upload", "拖拽文件到这里": "Drag files here", "报告预览": "Report Preview", "符合性声明": "Declaration of Conformity", "合规报告": "Compliance Report", "风险评估": "Risk Assessment", "合规评分": "Compliance Score", "可回收性": "Recyclability", "包装减量": "Packaging Minimization", "服务支持": "Service Support", "服务方案": "Service Plans", "企业版": "Enterprise", "联系我们": "Contact Us", "工单": "Tickets", "整改事项": "Corrective Actions", "暂无数据": "No Data Yet", "暂无记录": "No Records Yet", "加载中": "Loading", "正在分析": "Analyzing", "检测中": "Checking", "离线": "Offline", "在线": "Online", "未连接": "Not Connected", "已连接": "Connected", "提示": "Notice", "注意": "Attention", "重要": "Important", "本地演示": "Local Demo", "示例数据": "Sample Data", "仅供演示": "For Demonstration Only", "不构成法律意见": "Not Legal Advice", "欧盟包装与包装废弃物正式法规，适用义务应以条文及后续修订为准。": "Official EU packaging and packaging waste regulation. Applicable obligations depend on the legislation and later amendments.", "欧洲委员会发布的 PPWR 实施指南，针对部分条款作解释。": "European Commission guidance interpreting selected PPWR provisions.", "欧盟委员会官方 PPWR 常见问题，帮助确认实际适用场景。": "Official European Commission PPWR FAQ clarifying practical applications.", "查看实施指南、配套法案及正在制定的措施。": "Review implementation guidance, secondary legislation and measures under development.", "提供化学物质监管背景信息；不包含客户包装的真实检测值。": "Regulatory information on chemicals; does not include actual test results for customer packaging.", "德国生产者登记公开查询入口；登记不等于完全 EPR 履责。": "Public German producer register; registration alone does not establish full EPR compliance.", "向供应商索取重金属检测依据": "Request heavy-metal test evidence from supplier", "验证 EPS 缓冲的纸基替代方案": "Validate paper-based alternatives to EPS cushioning", "确认目标国 EPR 注册义务": "Confirm EPR registration obligations in target market"};
+const keys=Object.keys(dict).sort((a,b)=>b.length-a.length);
+const baselines=new WeakMap(), attrBases=new WeakMap();
+let lang='zh', updating=false;
+try{lang=localStorage.getItem('greenpack-language')==='en'?'en':'zh'}catch(e){}
+function tr(str){
+ if(typeof str!=='string'||!/[一-鿿]/.test(str))return str;
+ const m=str.match(/^(\s*)([\s\S]*?)(\s*)$/),core=m[2];
+ if(dict[core])return m[1]+dict[core]+m[3];
+ let value=core;
+ for(const k of keys)if(k.length>=3&&value.includes(k))value=value.split(k).join(dict[k]);
+ return m[1]+value+m[3];
+}
+function translateHtml(html){
+ const parsed=new DOMParser().parseFromString(html,'text/html');
+ const walker=parsed.createTreeWalker(parsed.body,NodeFilter.SHOW_TEXT);
+ const texts=[];while(walker.nextNode())texts.push(walker.currentNode);
+ for(const n of texts)if(!/^(SCRIPT|STYLE)$/i.test(n.parentElement?.tagName||''))n.nodeValue=tr(n.nodeValue);
+ for(const el of parsed.querySelectorAll('[title],[placeholder],[aria-label]'))
+  for(const a of ['title','placeholder','aria-label'])if(el.hasAttribute(a))el.setAttribute(a,tr(el.getAttribute(a)));
+ parsed.documentElement.lang='en';
+ parsed.title='GreenPack PPWR Preliminary Compliance Report · Draft';
+ return '<!doctype html>\n'+parsed.documentElement.outerHTML;
+}
+window.v3TranslateHtml=translateHtml;
+function apply(){
+ if(updating)return;updating=true;
+ try{
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  for(const n of nodes){
+   if(/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/i.test(n.parentElement?.tagName||''))continue;
+   const prev=baselines.get(n);
+   if(prev===undefined)baselines.set(n,n.nodeValue);
+   else if(n.nodeValue!==prev&&n.nodeValue!==tr(prev))baselines.set(n,n.nodeValue);
+   const raw=baselines.get(n),wanted=lang==='en'?tr(raw):raw;
+   if(n.nodeValue!==wanted)n.nodeValue=wanted;
+  }
+  for(const el of document.body.querySelectorAll('[title],[placeholder],[aria-label]')){
+   let rec=attrBases.get(el);if(!rec){rec={};attrBases.set(el,rec)}
+   for(const a of ['title','placeholder','aria-label']){
+    if(!el.hasAttribute(a))continue;
+    if(!(a in rec))rec[a]=el.getAttribute(a);
+    else if(el.getAttribute(a)!==rec[a]&&el.getAttribute(a)!==tr(rec[a]))rec[a]=el.getAttribute(a);
+    const wanted=lang==='en'?tr(rec[a]):rec[a];
+    if(el.getAttribute(a)!==wanted)el.setAttribute(a,wanted);
+   }
+  }
+  document.documentElement.lang=lang==='en'?'en':'zh-CN';
+  document.title=lang==='en'?'GreenPack Studio AI · PPWR Compliance & Evidence':'绿包智造 AI · PPWR 智能合规与证据管理平台';
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
+ }finally{updating=false}
+}
+function refreshPanels(){
+ const snapshot=window.v3Data?window.v3Data():null;
+ const a=snapshot?.a,stats=snapshot?.stats;
+ const ac=document.getElementById('v3-assessment-grid');
+ if(ac&&a){
+  const missing=a.missingMaterials||0;
+  ac.innerHTML='<div class="v3-cell"><strong>组件证明 / Component evidence</strong>'+missing+' 项缺少材料证明。<p>需人工核查供应商文件与组件关联。</p></div>'+
+   '<div class="v3-cell"><strong>内部优化指数 / Internal index</strong>'+(a.total?a.score:'—')+' / 100<p>示例算法，不是法定合规评分。</p></div>'+
+   '<div class="v3-cell"><strong>法规核验 / Regulatory verification</strong>核对材料、用途、目标国与适用日期。<p><a target="_blank" rel="noopener noreferrer" href="https://eur-lex.europa.eu/eli/reg/2025/40/oj">Regulation (EU) 2025/40</a></p></div>';
+ }
+ const ec=document.getElementById('v3-evidence-grid');
+ if(ec&&stats){
+  ec.innerHTML='<div class="v3-cell"><strong>有效人工复核 / Reviewed</strong>'+stats.reviewed+' 份<p>不等于官方认证或检测结果验真。</p></div>'+
+   '<div class="v3-cell"><strong>待核验 / Pending</strong>'+stats.pending+' 份<p>请核对原件、签发机构与报告编号。</p></div>'+
+   '<div class="v3-cell"><strong>已过期 / Expired</strong>'+stats.expired+' 份<p>过期证据不能作为有效复核依据。</p></div>';
+ }
+ if(lang==='en')apply();
+}
+window.v3Refresh=refreshPanels;
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-lang]');if(!b)return;
+ lang=b.dataset.lang;
+ try{localStorage.setItem('greenpack-language',lang)}catch(err){}
+ apply();
+});
+let scheduled=false;
+const observer=new MutationObserver(changes=>{
+ if(updating||scheduled)return;
+ if(!changes.some(c=>c.type==='childList'||c.type==='characterData'||c.type==='attributes'))return;
+ scheduled=true;
+ queueMicrotask(()=>{scheduled=false;apply()});
+});
+function start(){
+ refreshPanels();apply();
+ observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','placeholder','aria-label']});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+</body></html>
