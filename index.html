@@ -402,6 +402,15 @@ h3{font-size:15px}
 .ai-review pre{white-space:pre-wrap;font:inherit;color:#41644f;margin:0}
 .ai-result-label{font-size:10px;font-weight:850;color:#26794c;text-transform:uppercase;letter-spacing:1px}
 .ai-error{color:#aa6953;font-size:11px;margin-top:8px}
+.ai-verdict{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid #d8ebdc;border-radius:12px;padding:12px 14px;margin:9px 0 10px}
+.ai-verdict p{flex:1;margin:0;font-size:12px;color:#2c5340;line-height:1.8}
+.ai-conf{flex:none;text-align:center;font-size:10px;color:#7b9184;line-height:1.5}
+.ai-conf b{display:block;font-size:18px;color:#1c7a52;letter-spacing:0}
+.ai-insight{display:flex;gap:11px;align-items:center;background:#f6fbf6;border:1px solid #e2f0e4;border-left:3px solid #56a97a;border-radius:10px;padding:10px 12px;margin:8px 0}
+.ai-insight>div{flex:1;font-size:11px;color:#3c6150;line-height:1.75}
+.ai-insight b{color:#1b6b49;font-size:11.5px}
+.hit-chips{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 4px}
+.hit-chip{font-size:9px;font-weight:800;color:#4a7a60;background:#eef7ef;border:1px solid #dcecdf;border-radius:100px;padding:2px 8px}
 .bom-cite{margin:8px 0 0;font-size:10px;color:#81998b}
 .evidence-sup{font-size:10px;color:#748c7d;line-height:1.7}
 .evidence-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:17px}
@@ -1373,26 +1382,67 @@ function renderLaws(){
  </div>`).join("")||`<div class="empty" style="grid-column:1/-1">没有匹配结果。尝试“PFAS”“EPR”“空隙率”“EU DoC”，或打开官方原文。</div>`;
  renderSources();
 }
-function matchesForQuestion(q){
+const SYN_GROUPS={
+ eps:["eps","泡沫","发泡","保丽龙","缓冲"],
+ pfas:["pfas","全氟","pfos","pfoa","食品接触","食品包装"],
+ heavy:["重金属","铅","镉","汞","六价铬","100mg","100 mg"],
+ recycl:["可回收","回收","分拣","再生","复合","塑料","纸基"],
+ void:["空隙","过度包装","体积比","50%"],
+ doc:["doc","符合性声明","技术文件","签署","证书","认证"],
+ epr:["epr","注册","登记","生产者责任","授权代表","lucid","包装法"],
+ reduce:["减量","最小化","轻量化","优化","重量"]
+};
+const LAW_GROUPS={Art5:["heavy","pfas"],Art6:["recycl","eps"],Art10:["reduce"],Art24:["void"],Art39:["doc"],Art44:["epr"],FAQ:["pfas","doc"],ECHA:["pfas"]};
+const GROUP_LABEL={eps:"EPS/缓冲",pfas:"PFAS/食品接触",heavy:"重金属",recycl:"可回收",void:"空隙率",doc:"DoC/技术文件",epr:"EPR/登记",reduce:"减量"};
+function scoreLaws(q){
  const text=q.toLowerCase();
- let ids=[];
- if(/eps|泡沫|发泡|可回收|复合|分拣|recycl/.test(text))ids.push("Art6");
- if(/pfas|食品|氟|重金属|化学|铅|镉|汞/.test(text))ids.push("Art5","FAQ");
- if(/空隙|50%|体积|减量|运输|过度包装/.test(text))ids.push("Art10","Art24");
- if(/doc|声明|报告|签署|文件|认证|证书/.test(text))ids.push("Art39");
- if(/epr|注册|授权|代表|德国|法国|lucid/.test(text))ids.push("Art44");
- if(!ids.length)ids=["Art5","Art6","Art24"];
- return [...new Set(ids)].map(id=>LAWS.find(x=>x.id===id)).filter(Boolean).slice(0,4);
+ const groups=Object.keys(SYN_GROUPS).filter(g=>SYN_GROUPS[g].some(w=>text.includes(w.toLowerCase())));
+ return LAWS.map(l=>{
+  let s=0;const hits=[];
+  (l.art.match(/\d+/g)||[]).forEach(n=>{if(new RegExp("第\\s*"+n+"\\s*条|art\\.?\\s*"+n+"(?!\\d)").test(text))s+=6});
+  if(text.includes(l.name.toLowerCase()))s+=3;
+  (l.keywords||"").split(/\s+/).filter(Boolean).forEach(k=>{if(k&&text.includes(k.toLowerCase())){s+=2;hits.push(k)}});
+  (LAW_GROUPS[l.id]||[]).forEach(g=>{if(groups.includes(g)){s+=3;hits.push(GROUP_LABEL[g]||g)}});
+  return {law:l,score:s,hits:[...new Set(hits)]};
+ }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+}
+function matchesForQuestion(q){
+ const ranked=scoreLaws(q);
+ if(ranked.length)return ranked.slice(0,4).map(x=>x.law);
+ return ["Art5","Art6","Art24"].map(id=>LAWS.find(l=>l.id===id)).filter(Boolean);
+}
+function projectInsights(laws,q){
+ const a=analyze(),ids=laws.map(l=>l.id),out=[],text=String(q||"");
+ const eps=a.comps.filter(c=>c.material==="eps");
+ if(ids.includes("Art6")&&eps.length)out.push({t:`BOM 中含 ${eps.length} 个 EPS 缓冲组件（${eps.map(c=>c.name).join("、")}）`,d:"回收性能等级要等配套授权法案，材料种类本身推不出法定等级。建议先做纸基或可分离方案比选，把替换前后的重量与保护性测试记录到技术文件。",act:"go-builder",label:"去组件建模"});
+ const asked=(text.match(/(\d{1,3})\s*%/)||[])[1];
+ if(ids.includes("Art24")&&(Number(asked)>50||(state.voidRatio!==""&&Number(state.voidRatio)>50&&state.packagingType!=="sales")))out.push({t:Number(asked)>50?`你提到的 ${asked}% 空隙率高于 50% 参照线`:`自报空隙率 ${fmt(state.voidRatio)}%，高于 50% 参照线`,d:`当前项目录入空隙率为 ${state.voidRatio===""?"空":fmt(state.voidRatio)+"%"}。该限制适用时点为 2030 年或方法法案生效后三年（较晚者），且需按适用方法核算并留存尺寸依据。`,act:"go-builder",label:"补充尺寸数据"});
+ if(ids.includes("Art10")&&a.comps.length)out.push({t:`包装总重 ${fmt(a.total)} g，优化指数 ${a.score}/100`,d:"减量义务要求重量和体积降到功能必需的最低水平，并保留保护性依据；优化指数只是内部比较指标，不是 PPWR 法定等级。",act:"go-builder",label:"查看优化建议"});
+ if((ids.includes("Art5")||ids.includes("FAQ"))&&/pfas|全氟|氟|食品/.test(text)&&!state.foodContact)out.push({t:"当前项目未标记食品直接接触",d:"若包装直接接触食品，需在组件建模中勾选食品接触，并补充 PFAS 检测依据；第 5(5) 条涉及 25 ppb、250 ppb、50 ppm 三档限值，具体适用要看检测定义。",act:"go-builder",label:"设置食品接触"});
+ const miss=["heavy",...(state.foodContact?["pfas"]:[])].filter(k=>!state.evidence.some(e=>e.kind===k&&e.review==="reviewed"&&!isExpired(e)));
+ if(ids.includes("Art5")&&miss.length)out.push({t:`尚缺已复核的${miss.map(k=>EVIDENCE_KINDS[k]).join("、")}`,d:"第 5 条要求限值判定有适用检测依据。OCR 可把报告编号、出具机构、有效期自动填进证据台账，但仍须人工对照原件核对。",act:"go-media",label:"去证据台账"});
+ if(ids.includes("Art39")&&!state.evidence.some(e=>e.kind==="technical"&&e.review==="reviewed"&&!isExpired(e)))out.push({t:"技术文件 / EU DoC 底稿尚未复核",d:"制造商需按附件 VII 完成技术文件与符合性评估，并按附件 VIII 出具 DoC；系统生成的是底稿，签署与责任仍由制造商承担。",act:"go-reports",label:"去报告与 DoC"});
+ if(ids.includes("Art44")&&!state.evidence.some(e=>e.kind==="epr"&&e.review==="reviewed"&&!isExpired(e)))out.push({t:`目标市场 ${state.destination} 的 EPR 登记资料待补`,d:"登记义务要按目标成员国、销售链路和经济主体身份判断；德国 LUCID 等登记信息只是起点，不等于全部履责证明。",act:"go-media",label:"补充 EPR 凭证"});
+ return out.slice(0,3);
 }
 function localAnswer(){
  const q=EL("askInput").value.trim();
  if(!q){toast("请先输入法规问题");return false}
- const found=matchesForQuestion(q);
- const desc=found.map(x=>`<div class="rule-row"><div class="rule-icon">${ic("book")}</div><div class="rule-text"><b>${esc(x.art)} · ${esc(x.name)}</b><small>${esc(x.text)}</small><div class="answer-sources" style="margin-top:9px">${lawSourceLinks(x.sources)}</div></div></div>`).join("");
- EL("askResult").innerHTML=`<div class="ai-review"><div class="ai-result-label">SOURCE-BASED RETRIEVAL · 本地规则检索，非模型回答</div>
- <h3 style="margin-top:6px">为你的问题匹配了 ${found.length} 项相关条款</h3>
- <div class="evidence-sup">当前项目：${esc(state.product)} / ${esc(state.destination)}。本地内容仅包含已内置的法规摘要，不能代替适用性审查。</div>
- ${desc}<p class="evidence-sup" style="margin-top:12px">来源核对快照：${SNAPSHOT}。上方链接指向官方原文，AI 联网模型服务另行接入。</p></div>`;
+ const ranked=scoreLaws(q);
+ const laws=ranked.length?ranked.slice(0,3).map(x=>x.law):["Art5","Art6","Art24"].map(id=>LAWS.find(l=>l.id===id)).filter(Boolean);
+ const conf=!ranked.length?"低":ranked[0].score>=9?"高":ranked[0].score>=5?"中":"低";
+ const hits=[...new Set(ranked.slice(0,3).flatMap(x=>x.hits))].slice(0,6);
+ const insights=ranked.length?projectInsights(laws,q):[];
+ const verdict=!ranked.length
+  ? `内置的 ${LAWS.length} 条摘要中没有与“${esc(q)}”直接对应的条款。可以换用“PFAS”“EPR”“空隙率”“EU DoC”等关键词，或直接翻阅下方法规库。`
+  : `与问题最相关的是 ${laws.map(l=>esc(l.art)).join("、")}。${insights.length?`结合当前项目数据，有 ${insights.length} 处需要你确认或补证。`:"当前项目数据未触发明显缺口，仍建议对照原文复核。"}`;
+ const rows=laws.map(l=>`<div class="rule-row"><div class="rule-icon">${ic("book")}</div><div class="rule-text"><b>${esc(l.art)} · ${esc(l.name)}</b> <span class="pill ${l.state==="current"?"green":l.state==="doc"?"blue":"amber"}" style="margin-left:6px">${esc(l.badge)}</span><small>${esc(l.text)}</small><div class="evidence-sup" style="margin-top:5px">适用时点：${esc(l.apply)}</div><div class="answer-sources" style="margin-top:9px">${lawSourceLinks(l.sources)}</div></div></div>`).join("");
+ EL("askResult").innerHTML=`<div class="ai-review"><div class="ai-result-label">LOCAL RETRIEVAL · 本地法规检索，非模型生成</div>
+ <div class="ai-verdict"><p>${verdict}</p><div class="ai-conf"><b>${conf}</b>命中置信度</div></div>
+ ${hits.length?`<div class="hit-chips">${hits.map(h=>`<span class="hit-chip">${esc(h)}</span>`).join("")}</div>`:""}
+ ${insights.map(i=>`<div class="ai-insight"><div><b>${esc(i.t)}</b><br>${esc(i.d)}</div><button class="btn sm soft" data-action="${i.act}">${esc(i.label)}</button></div>`).join("")}
+ <h3 style="margin:14px 0 4px">依据条款</h3>${rows}
+ <p class="evidence-sup" style="margin-top:12px">检索范围：内置 ${LAWS.length} 条法规摘要、6 处官方来源（快照核对 ${SNAPSHOT}）。当前项目：${esc(state.product)} / ${esc(state.destination)}。本地检索不构成法律意见，最终判断须对照官方原文并由人工签署。</p></div>`;
  return true;
 }
 function setAiStatus(mode){
