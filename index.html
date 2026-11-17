@@ -418,6 +418,16 @@ h3{font-size:15px}
 .evidence-body .doc-meta-line{margin:8px 0 0}
 .evidence-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
 .evidence-actions .btn{font-size:10px}
+.ocr-panel{display:none;margin-top:14px;border:1px solid #dfeade;background:#f7fbf7;border-radius:12px;padding:13px 14px}
+.ocr-panel.show{display:block}
+.ocr-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.ocr-head b{font-size:12px;color:#1f4a33}
+.ocr-fields{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+.ocr-chip{background:#e9f6ee;border:1px solid #d5ebde;color:#1c6a4a;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700}
+.ocr-chip.empty{background:#fdf4e5;border-color:#f2e2c7;color:#9c7433}
+.ocr-text{max-height:150px;overflow:auto;white-space:pre-wrap;line-height:1.7;background:#fff;border:1px solid #e8efe9;border-radius:8px;padding:9px 10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:#3d5a48}
+.ocr-tile-btn{margin-top:6px;display:inline-flex}
+.file-ocr-badge{font-size:9px;color:#1c6a4a;background:#e9f6ee;border-radius:999px;padding:2px 7px;margin-left:6px;font-weight:700}
 .audit-row{padding:12px 0 12px 19px;border-left:1px solid #d5e4d8;position:relative;margin-left:6px}
 .audit-row:before{content:"";width:9px;height:9px;border-radius:50%;background:#a9ceb6;border:2px solid #fff;box-shadow:0 0 0 1px #d9e8dc;position:absolute;top:16px;left:-6px}
 .audit-row:last-child{border-color:transparent}
@@ -738,6 +748,7 @@ table{max-width:100%}
        <div class="card card-pad">
          <div class="card-head"><div><h2>录入检测报告 / 认证资料</h2><p>建议先在下方上传附件，再建立证据记录</p></div></div>
          <form id="evidenceForm" class="form-grid">
+           <div class="field span2"><div class="actions" style="justify-content:flex-start;gap:8px"><button class="btn soft sm" type="button" data-action="ocr-attachment"><svg class="icon"><use href="#ico-file"/></svg>识别所选附件（OCR）</button><span class="evidence-sup">在本机浏览器运行，图片内容不上传；首次识别需加载中文识别模型</span></div></div>
            <div class="field span2"><label for="evName">证据名称 *</label><input id="evName" maxlength="120" required placeholder="例如：纸板四种重金属检测报告"></div>
            <div class="field"><label for="evKind">证据类型</label><select id="evKind"><option value="heavy">重金属检测</option><option value="pfas">PFAS 检测</option><option value="material">供应商材料声明</option><option value="technical">技术文件 / DoC 底稿</option><option value="epr">EPR 记录</option><option value="other">其他附件</option></select></div>
            <div class="field"><label for="evComponent">关联包装组件</label><select id="evComponent"></select></div>
@@ -749,6 +760,11 @@ table{max-width:100%}
            <div class="field span2"><label for="evNote">核查备注</label><textarea id="evNote" maxlength="350" rows="2" placeholder="检测范围、样品编号、待核实事项等"></textarea></div>
            <div class="field span2"><button class="btn primary" type="submit"><svg class="icon"><use href="#ico-plus"/></svg>录入证据 · 待人工核验</button></div>
          </form>
+         <div class="ocr-panel" id="ocrPanel">
+           <div class="ocr-head"><b id="ocrTitle">OCR 识别结果</b><span class="pill gray" id="ocrStatus">待识别</span></div>
+           <div class="ocr-fields" id="ocrFields"></div>
+           <div class="ocr-text" id="ocrText">选择已上传的图片或 PDF，点击上方按钮识别。识别结果仅作录入辅助，需人工核对原件。</div>
+         </div>
        </div>
        <div class="card card-pad">
          <div class="card-head"><div><h2>核查与操作记录</h2><p>本地演示的操作日志，可导出留档</p></div><button class="btn sm" data-action="export-audit"><svg class="icon"><use href="#ico-download"/></svg>导出日志</button></div>
@@ -1264,7 +1280,8 @@ function renderFiles(){
  EL("fileGrid").innerHTML=state.files.length?state.files.map(f=>
  `<div class="file-tile"><div class="file-preview">${f.preview?`<img src="${f.preview}" alt="${esc(f.name)}">`:ic(f.type==="application/pdf"?"file":"camera")}</div>
  <button class="file-delete" data-action="delete-file" data-id="${esc(f.id)}" title="移除文件">${ic("trash",true)}</button>
- <div class="file-meta"><b title="${esc(f.name)}">${esc(f.name)}</b><small>${esc(f.cat)} · ${fmt(f.size/1024)} KB${f.preview?"":" · 仅留存文件名"}</small></div></div>`
+ <div class="file-meta"><b title="${esc(f.name)}">${esc(f.name)}</b><small>${esc(f.cat)} · ${fmt(f.size/1024)} KB${f.preview?"":" · 仅留存文件名"}${f.ocr?`<span class="file-ocr-badge">已识别 ${f.ocr.conf}%</span>`:""}</small>
+ <button class="btn sm soft ocr-tile-btn" data-action="ocr-file" data-id="${esc(f.id)}">${ic("file",true)} ${f.ocr?"重新识别":"识别文字"}</button></div></div>`
  ).join(""):`<div class="empty" style="grid-column:1/-1">${ic("camera")}尚无附件。拖拽文件或点击上方上传即可建立档案。</div>`;
 }
 function reportMarkup(a){
@@ -1522,6 +1539,7 @@ async function handleFiles(files){
    preview=await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>resolve(null);reader.readAsDataURL(file)});
   }
   const fileId=ID("f");
+  FILE_BLOBS.set(fileId,file);
   state.files.unshift({id:fileId,name:file.name.slice(0,120),size:file.size,type:file.type||"application/octet-stream",cat:EL("uploadType").value,preview,at:new Date().toISOString()});
   auditEvent("附件归档",`${file.name} · ${file.size} bytes`,fileId);
   added++;
@@ -1529,6 +1547,142 @@ async function handleFiles(files){
  if(state.files.length>25)state.files=state.files.slice(0,25);
  save();renderAll();if(added)toast(`已归档 ${added} 份文件${state.files.some(f=>!f.preview)?"（大型文件可能只保留名称）":""}`);
  EL("fileInput").value="";
+}
+const FILE_BLOBS=new Map();
+let ocrWorker=null,ocrPending=null;
+function loadScriptOnce(src){
+ return new Promise((resolve,reject)=>{
+  if([...document.scripts].some(s=>s.src===src))return resolve();
+  const s=document.createElement("script");
+  s.src=src;s.async=true;s.onload=()=>resolve();s.onerror=()=>reject(new Error("依赖加载失败，请检查网络："+src));
+  document.head.appendChild(s);
+ });
+}
+async function getOcrWorker(onProgress){
+ if(ocrWorker)return ocrWorker;
+ if(ocrPending)return ocrPending;
+ ocrPending=(async()=>{
+  await loadScriptOnce("vendor/tesseract/tesseract.min.js");
+  if(!window.Tesseract)throw new Error("识别引擎未加载成功");
+  const base={logger:m=>{if(onProgress)onProgress(m)},workerPath:"vendor/tesseract/worker.min.js",corePath:"vendor/tesseract/core"};
+  try{
+   return await Tesseract.createWorker("chi_sim+eng",1,base);
+  }catch(err){
+   return await Tesseract.createWorker("chi_sim",1,base);
+  }
+ })();
+ try{ocrWorker=await ocrPending}finally{ocrPending=null}
+ return ocrWorker;
+}
+async function pdfFirstPage(file){
+ await loadScriptOnce("vendor/pdfjs/pdf.min.js");
+ if(!window.pdfjsLib)throw new Error("PDF 渲染组件未加载成功");
+ pdfjsLib.GlobalWorkerOptions.workerSrc="vendor/pdfjs/pdf.worker.min.js";
+ const buf=await file.arrayBuffer();
+ const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+ const page=await pdf.getPage(1);
+ const viewport=page.getViewport({scale:2});
+ const canvas=document.createElement("canvas");
+ canvas.width=viewport.width;canvas.height=viewport.height;
+ await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+ return canvas;
+}
+function parseOcrFields(text){
+ const raw=String(text||"").replace(/\r/g,"");
+ const t=raw.replace(/(?<=[\u4e00-\u9fa5])[ \t\u3000]+(?=[\u4e00-\u9fa5])/g,"");
+ const flat=t.replace(/\s+/g,"");
+ const out={};
+ const num=t.match(/(?:报告编号|报告号|证书编号|证书号|样品编号|编号|No\.?|Report\s*No\.?)[\s:：]*([A-Za-z0-9][A-Za-z0-9\-\/\.]{4,39})/i);
+ if(num)out.number=num[1].replace(/[\.\-]+$/,"");
+ if(!out.issuer){
+  for(const ln of t.split(/\n+/)){
+   const m=ln.match(/([\u4e00-\u9fa5（）()]{2,30}(?:检测|检验|测试|认证|计量|研究院|实验室)[\u4e00-\u9fa5（）()]{0,20}(?:有限公司|有限责任公司|中心|研究院|实验室|集团)?)/);
+   if(m&&m[1].length>=4){out.issuer=m[1].slice(0,40);break}
+  }
+ }
+ if(!out.issuer){
+  for(const ln of t.split(/\n+/)){
+   const en=ln.match(/\b(SGS|T[ÜU]V(?:\s*Rheinland)?|Intertek|Bureau\s+Veritas|CTI|Pony|Eurofins)\b/i);
+   if(en){out.issuer=en[1].trim().slice(0,40);break}
+  }
+ }
+ const dates=[...t.matchAll(/(20\d{2})\s*[年\-\/\.]\s*(\d{1,2})\s*[月\-\/\.]\s*(\d{1,2})/g)]
+  .map(m=>m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"));
+ if(dates.length)out.issued=dates[0];
+ const exp=t.match(/(?:有效期至|有效期限至|截止日期|到期日|有效期)[\s:：]*至?\s*(20\d{2})\s*[年\-\/\.]\s*(\d{1,2})\s*[月\-\/\.]\s*(\d{1,2})/);
+ if(exp)out.expires=exp[1]+"-"+String(exp[2]).padStart(2,"0")+"-"+String(exp[3]).padStart(2,"0");
+ if(!out.expires&&dates.length>1)out.expires=dates[dates.length-1];
+ out.kind=/PFAS|全氟化合物|全氟/i.test(flat)?"pfas":/重金属|铅|镉|汞|六价铬/i.test(flat)?"heavy":/EPR|注册号|生产者责任/i.test(flat)?"epr":/DoC|符合性声明|技术文件/i.test(flat)?"technical":/材料声明|供应商声明/i.test(flat)?"material":null;
+ return out;
+}
+function setOcrStatus(msg){const el=EL("ocrStatus");if(el)el.textContent=msg}
+function openOcrPanel(name){
+ const p=EL("ocrPanel");if(!p)return;
+ p.classList.add("show");
+ EL("ocrTitle").textContent="OCR 识别 · "+name;
+ EL("ocrFields").innerHTML="";
+ setOcrStatus("准备中…");
+}
+function renderOcrPanel(rec,fields,text){
+ const p=EL("ocrPanel");if(!p)return;
+ p.classList.add("show");
+ EL("ocrTitle").textContent="OCR 识别 · "+rec.name;
+ setOcrStatus("置信度 "+rec.ocr.conf+"% · 需人工核对");
+ const chips=[
+  ["报告编号",fields.number],
+  ["出具机构",fields.issuer],
+  ["签发日期",fields.issued],
+  ["截止日期",fields.expires],
+  ["证据类型",fields.kind?EVIDENCE_KINDS[fields.kind]:"未识别"]
+ ];
+ EL("ocrFields").innerHTML=chips.map(([k,v])=>`<span class="ocr-chip ${v?"":"empty"}">${k}：${esc(v||"未识别")}</span>`).join("");
+ EL("ocrText").textContent=text||"（未识别到可用文字，请确认图片清晰度后重试）";
+}
+function fillEvidenceForm(rec,fields,fileId){
+ const set=(id,val)=>{const el=EL(id);if(el&&val&&!el.value)el.value=val};
+ const name=EL("evName");
+ if(name&&!name.value)name.value=rec.name.replace(/\.[^.]+$/,"").slice(0,120);
+ if(fields.kind)EL("evKind").value=fields.kind;
+ set("evIssuer",fields.issuer);set("evNumber",fields.number);set("evIssue",fields.issued);set("evExpiry",fields.expires);
+ const att=EL("evAttachment");if(att)att.value=fileId;
+ const note=EL("evNote");
+ if(note&&!note.value)note.value="由 OCR 自动识别并经人工核对后录入（置信度 "+rec.ocr.conf+"%）。";
+}
+async function ocrFile(fileId){
+ const rec=state.files.find(f=>f.id===fileId);
+ if(!rec)return;
+ const blob=FILE_BLOBS.get(fileId);
+ if(!blob){toast("该文件内容未被保留（刷新后失效），请重新上传后再识别");return}
+ if(!(rec.type||"").startsWith("image/")&&rec.type!=="application/pdf"&&!/\.pdf$/i.test(rec.name)){
+  toast("仅支持图片与 PDF 识别");return;
+ }
+ openOcrPanel(rec.name);
+ try{
+  let source=blob;
+  if(rec.type==="application/pdf"||/\.pdf$/i.test(rec.name)){
+   setOcrStatus("正在渲染 PDF 首页…");
+   source=await pdfFirstPage(blob);
+  }
+  const worker=await getOcrWorker(m=>{
+   if(m.status==="recognizing text")setOcrStatus("识别中 "+Math.round((m.progress||0)*100)+"%");
+   else setOcrStatus(m.status||"准备中…");
+  });
+  setOcrStatus("识别中…");
+  const {data}=await worker.recognize(source);
+  const text=(data.text||"").trim();
+  const conf=Math.round(data.confidence||0);
+  const fields=parseOcrFields(text);
+  rec.ocr={text:text.slice(0,1500),conf,at:new Date().toISOString()};
+  auditEvent("OCR 识别附件",rec.name+" · 置信度 "+conf+"%",fileId);
+  save();renderAll();
+  renderOcrPanel(rec,fields,text);
+  fillEvidenceForm(rec,fields,fileId);
+  toast("识别完成，字段已尝试回填，请对照原件核对后再录入");
+ }catch(err){
+  setOcrStatus("识别失败");
+  EL("ocrText").textContent="识别失败："+(err.message||err)+"\n可检查网络后重试，或直接手动填写。图片与 PDF 不会上传到任何服务器。";
+  toast("OCR 失败，请稍后重试或手动填写");
+ }
 }
 function performAction(name,el){
  switch(name){
@@ -1554,8 +1708,14 @@ function performAction(name,el){
  case "edit-component":startEdit(el.dataset.id);break;
  case "delete-component":auditEvent("删除 BOM 组件",state.components.find(x=>x.id===el.dataset.id)?.name||"组件",el.dataset.id);state.components=state.components.filter(x=>x.id!==el.dataset.id);if(editing===el.dataset.id)resetCompForm();save();renderAll();toast("已移除包装组件");break;
  case "choose-file":EL("fileInput").click();break;
+ case "ocr-file":ocrFile(el.dataset.id);break;
+ case "ocr-attachment":{
+  const id=EL("evAttachment")?EL("evAttachment").value:"";
+  if(!id){toast("请先在“关联已上传的附件”中选择要识别的文件");break}
+  ocrFile(id);break;
+ }
  case "open-camera":EL("cameraInput").click();break;
- case "delete-file":auditEvent("删除附件",state.files.find(f=>f.id===el.dataset.id)?.name||"附件",el.dataset.id);state.files=state.files.filter(f=>f.id!==el.dataset.id);save();renderAll();toast("文件已从本地台账移除");break;
+ case "delete-file":auditEvent("删除附件",state.files.find(f=>f.id===el.dataset.id)?.name||"附件",el.dataset.id);state.files=state.files.filter(f=>f.id!==el.dataset.id);FILE_BLOBS.delete(el.dataset.id);save();renderAll();toast("文件已从本地台账移除");break;
  case "delete-task":state.tasks=state.tasks.filter(t=>t.id!==el.dataset.id);save();renderAll();toast("已删除整改事项");break;
  case "go-builder":nav("builder");break;
  case "go-media":nav("media");break;
