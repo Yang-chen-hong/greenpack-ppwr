@@ -1564,7 +1564,7 @@ async function getOcrWorker(onProgress){
  ocrPending=(async()=>{
   await loadScriptOnce("vendor/tesseract/tesseract.min.js");
   if(!window.Tesseract)throw new Error("识别引擎未加载成功");
-  const base={logger:m=>{if(onProgress)onProgress(m)},workerPath:"vendor/tesseract/worker.min.js",corePath:"vendor/tesseract/core"};
+  const base={logger:m=>{if(onProgress)onProgress(m)},workerPath:"vendor/tesseract/worker.min.js",corePath:"vendor/tesseract/core",langPath:"vendor/tesseract/lang"};
   try{
    return await Tesseract.createWorker("chi_sim+eng",1,base);
   }catch(err){
